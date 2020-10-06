@@ -29,9 +29,9 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
 
   constructor (
     address _uniswapFactory,
-    address _USDT,
+    address _WETH,
     address _NEC
-  ) public OracleManager(_uniswapFactory, _USDT, _NEC){
+  ) public OracleManager(_uniswapFactory, _WETH, _NEC){
     contractName = string(abi.encodePacked("DeversiFi_MasterTransferRegistry_v0.0.1"));
   }
 
