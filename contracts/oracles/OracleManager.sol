@@ -14,10 +14,15 @@ contract OracleManager {
   address NEC;
 
   uint public constant PERIOD = 24 hours;
-  mapping (address => uint256) public priceCumulativeLastUpdate;
+
+  // token to WETH price
+  mapping (address => FixedPoint.uq112x112) public T2WPrice;
+  // WETH to token price
+  mapping (address => FixedPoint.uq112x112) public W2TPrice;
+  mapping (address => uint256) public price0CumulativeLastUpdate;
+  mapping (address => uint256) public price1CumulativeLastUpdate;
   mapping (address => uint32) public blockTimestampLastUpdate;
 
-  mapping (address => FixedPoint.uq112x112) public tokenToWETHPrice;
   mapping (address => IUniswapV2Pair) public uniswapPairs;
 
   constructor(address _factory, address _WETH, address _NEC) public {
@@ -28,8 +33,11 @@ contract OracleManager {
   }
 
   function updateExchangeRate(address token) external returns (bool) {
+    require(token != WETH);
+    require(address(uniswapPairs[token]) != address(0));
+
     IUniswapV2Pair pair = uniswapPairs[token];
-    (uint priceCumulative, uint price1Cumulative, uint32 blockTimestamp) =
+    (uint price0Cumulative, uint price1Cumulative, uint32 blockTimestamp) =
     UniswapV2OracleLibrary.currentCumulativePrices(address(pair));
     uint32 timeElapsed = blockTimestamp - blockTimestampLastUpdate[token]; // overflow is desired
 
@@ -38,22 +46,44 @@ contract OracleManager {
 
     // overflow is desired, casting never truncates
     // cumulative price is in (uq112x112 price * seconds) units so we simply wrap it after division by time elapsed
-    tokenToWETHPrice[token] = FixedPoint.uq112x112(uint224((priceCumulative - priceCumulativeLastUpdate[token]) / timeElapsed));
-    priceCumulativeLastUpdate[token] = priceCumulative;
+    FixedPoint.uq112x112 memory p0 = FixedPoint.uq112x112(uint224((price0Cumulative - price0CumulativeLastUpdate[token]) / timeElapsed));
+    price0CumulativeLastUpdate[token] = price0Cumulative;
+    FixedPoint.uq112x112 memory p1 = FixedPoint.uq112x112(uint224((price1Cumulative - price1CumulativeLastUpdate[token]) / timeElapsed));
+    price1CumulativeLastUpdate[token] = price1Cumulative;
     blockTimestampLastUpdate[token] = blockTimestamp;
+
+    if (pair.token0() == WETH) {
+      W2TPrice[token] = p0;
+      T2WPrice[token] = p1;
+    } else {
+      T2WPrice[token] = p0;
+      W2TPrice[token] = p1;
+    }
     return true;
   }
 
+  // For a specified token and amount
+  // Returns the equivalent value as a quantity of NEC
   // Returns the rate of NEC vs a specified token (token / nec) i.e. 0.3 weth / nec
-  function necExchangeRate(address token) internal returns (uint256) {
-    // Going to need to do some Maths magic here to get it working
-    return tokenToWETHPrice[token].mul(1).decode144() * (tokenToWETHPrice[NEC]).mul(1).decode144();
+  function necExchangeRate(address token, uint256 amount) public view returns (uint256) {
+    if (token == NEC) {
+      return amount;
+    }
+    if (token == WETH) {
+      return W2TPrice[NEC].mul(amount).decode144();
+    }
+    return T2WPrice[token].mul(amount).decode144() * W2TPrice[NEC].mul(1).decode144();
   }
 
   function registerNewOracle(address token) public returns (bool) {
-    return true; // This function doesnt work yet without a real uniswapFactory
+    if (address(uniswapPairs[token]) != address(0) ||
+      token == WETH
+    ) {
+      return true;
+    }
     IUniswapV2Pair _pair = IUniswapV2Pair(UniswapV2Library.pairFor(uniswapFactory, token, WETH));
-    (uint reserve0, uint reserve1, uint blockTimestampLast) = _pair.getReserves();
+    (uint reserve0, uint reserve1, uint32 blockTimestampLast) = _pair.getReserves();
+    blockTimestampLastUpdate[token] = blockTimestampLast;
     require(reserve0 != 0 && reserve1 != 0, 'ExampleOracleSimple: NO_RESERVES'); // ensure that there's liquidity in the pair
     uniswapPairs[token] = _pair;
     return true;

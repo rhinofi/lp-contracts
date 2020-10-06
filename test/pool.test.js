@@ -2,7 +2,18 @@
 const WithdrawalPool = artifacts.require('./WithdrawalPool.sol')
 const MasterTransferRegistry = artifacts.require('./MasterTransferRegistry.sol')
 const MintableERC20 = artifacts.require('./MintableERC20.sol')
-// const UniswapV2Factory = artifacts.require('./UniswapV2Factory.sol')
+
+const factoryJson = require('@uniswap/v2-core/build/UniswapV2Factory.json')
+const pairJson = require('@uniswap/v2-core/build/UniswapV2Pair.json')
+const contractInit = require('@truffle/contract')
+const UniswapV2Factory = contractInit(factoryJson)
+const UniswapV2Pair = contractInit(pairJson)
+UniswapV2Factory.setProvider(web3.currentProvider)
+UniswapV2Pair.setProvider(web3.currentProvider)
+
+function assertEventOfType (response, eventName, index) {
+  assert.equal(response.logs[index].event, eventName, eventName + ' event should have fired.')
+}
 
 const catchRevert = require("./helpers/exceptions").catchRevert
 const BN = web3.utils.BN
@@ -10,15 +21,28 @@ const _1e18 = new BN('1000000000000000000')
 
 contract('WithdrawalPool', (accounts) => {
 
-  let pool, token, nectar, registry
+  let uni, pool, weth, nectar, registry, factory
 
   beforeEach('redeploy contract', async function () {
-    token = await MintableERC20.new('Tether_USD', 'USDT')
+    weth = await MintableERC20.new('Wrapped_ETH', 'WETH')
     nectar = await MintableERC20.new('Nectar', 'NEC')
-    registry = await MasterTransferRegistry.new(accounts[9], token.address, nectar.address)
-    await registry.createNewPool(token.address)
-    await token.mint(accounts[1], _1e18.mul(new BN(5000)))
-    const poolAddress = await registry.tokenPools(token.address)
+
+    factory = await UniswapV2Factory.new(accounts[0], { from: accounts[0] })
+
+    const tx = await factory.createPair(weth.address, nectar.address, { from: accounts[0] })
+    assertEventOfType(tx, 'PairCreated', 0)
+    uni = await UniswapV2Pair.at(tx.logs[0].args.pair)
+
+    await weth.mint(accounts[0], _1e18.mul(new BN(100)))
+    await nectar.mint(accounts[0], _1e18.mul(new BN(100000)))
+    await weth.transfer(uni.address, _1e18.mul(new BN(40)))
+    await nectar.transfer(uni.address, _1e18.mul(new BN(50000)))
+    await uni.mint(accounts[0], { from: accounts[0] })
+
+    registry = await MasterTransferRegistry.new(factory.address, weth.address, nectar.address)
+    await registry.createNewPool(weth.address)
+    await weth.mint(accounts[1], _1e18.mul(new BN(5000)))
+    const poolAddress = await registry.tokenPools(weth.address)
     pool = await WithdrawalPool.at(poolAddress)
   })
 
@@ -26,29 +50,29 @@ contract('WithdrawalPool', (accounts) => {
     const address = await pool.poolToken()
     const masterRegistry = await pool.transferRegistry()
     const totalPoolSize = await pool.totalPoolSize()
-    assert.equal(address, token.address, 'Pool token not set')
+    assert.equal(address, weth.address, 'Pool token not set')
     assert.equal(masterRegistry, registry.address, 'Master not correctly set in pool contract')
     assert.equal(totalPoolSize, 0, 'There are already deposits?')
   })
 
-  it('joinPool: when depositing tokens to the pool, the tokens are transfered into the contract, and correct number of LP tokens are minted for depositor', async () => {
+  it('joinPool: when depositing tokens to the pool, the tokenss are transfered into the contract, and correct number of LP tokens are minted for depositor', async () => {
     const depositAmount = _1e18.mul(new BN(1000))
-    await token.approve(pool.address, depositAmount, { from: accounts[1] })
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
     await pool.joinPool(depositAmount, { from: accounts[1] })
-    const newBalance = await token.balanceOf(accounts[1])
+    const newBalance = await weth.balanceOf(accounts[1])
     assert.equal(newBalance.toString(), _1e18.mul(new BN(5000)).sub(depositAmount).toString(), 'Token not transfered')
 
-    const lpTokenBalance = await pool.balanceOf(accounts[1])
-    assert.equal(lpTokenBalance.toString(), _1e18.mul(new BN(100)).toString(), 'Initial mint for first depositor was not 100')
+    const lpwethBalance = await pool.balanceOf(accounts[1])
+    assert.equal(lpwethBalance.toString(), _1e18.mul(new BN(100)).toString(), 'Initial mint for first depositor was not 100')
   })
 
   it('joinPool: multiple depositors get credited correct ratio of LP tokens', async () => {
     const depositAmount = _1e18.mul(new BN(1000))
-    await token.transfer(accounts[2], depositAmount, { from: accounts[1] })
-    await token.transfer(accounts[3], _1e18.mul(new BN(400)), { from: accounts[1] })
-    await token.approve(pool.address, depositAmount, { from: accounts[1] })
-    await token.approve(pool.address, depositAmount, { from: accounts[2] })
-    await token.approve(pool.address, depositAmount, { from: accounts[3] })
+    await weth.transfer(accounts[2], depositAmount, { from: accounts[1] })
+    await weth.transfer(accounts[3], _1e18.mul(new BN(400)), { from: accounts[1] })
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    await weth.approve(pool.address, depositAmount, { from: accounts[2] })
+    await weth.approve(pool.address, depositAmount, { from: accounts[3] })
 
     await pool.joinPool(depositAmount, { from: accounts[1] })
     await pool.joinPool(depositAmount, { from: accounts[2] })

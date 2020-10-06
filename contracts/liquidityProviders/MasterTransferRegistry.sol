@@ -75,7 +75,7 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
   function lend(address erc20, uint256 amount) internal returns (bool) {
     lentSupply[erc20] = lentSupply[erc20].add(amount);
     require(lentSupply[erc20]<= IERC20(erc20).balanceOf(tokenPools[erc20]));
-    require(lentSupply[erc20].mul(necExchangeRate(erc20)) <= totalNectar().div(reserveRatio));
+    require(necExchangeRate(erc20, lentSupply[erc20]) <= totalNectar().div(reserveRatio));
     return true;
   }
 
