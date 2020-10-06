@@ -102,7 +102,7 @@ contract('OracleManager', (accounts) => {
     assert.equal(price.toString(), _1e18.mul(expectedRatio).toString(), 'Price was not updated')
   })
 
-  it.only('updateExchangeRate: returns correct price for USDT to NEC after update', async () => {
+  it('updateExchangeRate: returns correct price for USDT to NEC after update', async () => {
 
     const tether = await MintableERC20.new('Tether_USD', 'USDT')
 
@@ -111,19 +111,19 @@ contract('OracleManager', (accounts) => {
     const poolTether = await UniswapV2Pair.at(tx.logs[0].args.pair)
 
     await tether.mint(accounts[0], _1e18.mul(new BN(100000)))
-    await tether.transfer(pool.address, _1e18.mul(new BN(10000)))
-    await weth.transfer(pool.address, _1e18.mul(new BN(40)))
+    await tether.transfer(poolTether.address, _1e18.mul(new BN(10000)))
+    await weth.transfer(poolTether.address, _1e18.mul(new BN(40)))
     await poolTether.mint(accounts[0], { from: accounts[0] })
 
     await oracle.registerNewOracle(tether.address)
 
     const usdtEthPair = await oracle.uniswapPairs(tether.address)
-    assert.equal(usdtEthPair, pool.address, 'Pair was not registered')
+    assert.equal(usdtEthPair, poolTether.address, 'Pair was not registered')
 
     await moveForwardTime(86400)
 
-    await tether.transfer(pool.address, _1e18.mul(new BN(1000)))
-    await weth.transfer(pool.address, _1e18.mul(new BN(4)))
+    await tether.transfer(poolTether.address, _1e18.mul(new BN(1000)))
+    await weth.transfer(poolTether.address, _1e18.mul(new BN(4)))
     await poolTether.mint(accounts[0], { from: accounts[0] })
 
     await weth.transfer(pool.address, _1e18.mul(new BN(4)))
@@ -134,7 +134,9 @@ contract('OracleManager', (accounts) => {
     await oracle.updateExchangeRate(nectar.address)
     const price = await oracle.necExchangeRate(tether.address, _1e18)
     const expectedRatio = new BN(5)
-    assert.equal(price.toString(), _1e18.mul(expectedRatio).toString(), 'Price was not updated')
+    // Note there can be rounding here so we check for almost equal
+    const expectedPrice = _1e18.mul(expectedRatio)
+    assert.isTrue(price.sub(expectedPrice).abs().toNumber() < 2000, 'Price was not close to expected')
   })
 
 })
