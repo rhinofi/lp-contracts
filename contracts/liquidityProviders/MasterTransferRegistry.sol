@@ -64,15 +64,15 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
       require(!_factCheck(transferFact), "TRANSFER_ALREADY_REGISTERED");
       registerFact(transferFact);
       emit LogRegisteredTransfer(recipient, erc20, amount, salt);
+      borrowFromPool(erc20, amount);
       IERC20(erc20).safeTransferFrom(tokenPools[erc20], recipient, calculateAmountMinusFee(amount));
-      lend(erc20, amount);
   }
 
   function calculateAmountMinusFee(uint256 amount) internal returns (uint256) {
-    return amount.sub(amount.mul(poolFee).div(100));
+    return amount.sub(amount.mul(poolFee).div(10000));
   }
 
-  function lend(address erc20, uint256 amount) internal returns (bool) {
+  function borrowFromPool(address erc20, uint256 amount) internal returns (bool) {
     lentSupply[erc20] = lentSupply[erc20].add(amount);
     require(lentSupply[erc20]<= IERC20(erc20).balanceOf(tokenPools[erc20]));
     uint256 equivalentLoanValueInNEC = necExchangeRate(erc20, lentSupply[erc20]);
