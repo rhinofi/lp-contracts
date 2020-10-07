@@ -15,7 +15,7 @@ function assertEventOfType (response, eventName, index) {
   assert.equal(response.logs[index].event, eventName, eventName + ' event should have fired.')
 }
 
-const catchRevert = require("./helpers/exceptions").catchRevert
+const { blockTime, moveForwardTime } = require('./helpers/utils')
 const BN = web3.utils.BN
 const _1e18 = new BN('1000000000000000000')
 
@@ -55,7 +55,7 @@ contract('WithdrawalPool', (accounts) => {
     assert.equal(totalPoolSize, 0, 'There are already deposits?')
   })
 
-  it('joinPool: when depositing tokens to the pool, the tokenss are transfered into the contract, and correct number of LP tokens are minted for depositor', async () => {
+  it('joinPool: when depositing tokens to the pool, the tokens are transfered into the contract, and correct number of LP tokens are minted for depositor', async () => {
     const depositAmount = _1e18.mul(new BN(1000))
     await weth.approve(pool.address, depositAmount, { from: accounts[1] })
     await pool.joinPool(depositAmount, { from: accounts[1] })
@@ -86,8 +86,48 @@ contract('WithdrawalPool', (accounts) => {
     assert.equal(lpTokenBalance3.toString(), _1e18.mul(new BN(40)).toString(), 'Third depositor not give LP tokens at correct ratio')
   })
 
-  it('exitPool: LP tokens are destroyed and proportional share of pool withdrawn', async () => {
+  it('exitPool and finaliseExit: LP tokens are destroyed and share of pool put into pending state', async () => {
+    const depositAmount = _1e18.mul(new BN(1000))
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    await pool.joinPool(depositAmount, { from: accounts[1] })
+    const newBalance = await weth.balanceOf(accounts[1])
+    assert.equal(newBalance.toString(), _1e18.mul(new BN(5000)).sub(depositAmount).toString(), 'Token not transfered')
 
+    const expectedShares = _1e18.mul(new BN(100))
+    let lpwethBalance = await pool.balanceOf(accounts[1])
+    assert.equal(lpwethBalance.toString(), expectedShares.toString(), 'Initial mint for first depositor was not 100')
+
+    const exitAmount = _1e18.mul(new BN(80))
+    pool.exitPool(exitAmount, { from: accounts[1] })
+
+    lpwethBalance = await pool.balanceOf(accounts[1])
+    assert.equal(lpwethBalance.toString(), expectedShares.sub(exitAmount).toString(), 'LP tokens not transfered away')
+
+    let pendingExit = await pool.exitRequests(accounts[1])
+    assert.equal(pendingExit.shares.toString(), exitAmount.toString())
+    assert.equal(pendingExit.requestTime, await blockTime(), 'Time of request not set correctly')
+
+    // Initialy finaliseExit will not work because time has not passed
+    await pool.finaliseExit({ from: accounts[1] })
+
+    pendingExit = await pool.exitRequests(accounts[1])
+    assert.equal(pendingExit.shares.toString(), exitAmount.toString(), 'Pending amount has not changed')
+
+    let updatedBalance = await weth.balanceOf(accounts[1])
+    assert.equal(updatedBalance.toString(), _1e18.mul(new BN(5000)).sub(depositAmount).toString(), 'No change to weth balance')
+
+    await moveForwardTime(86400)
+
+    await pool.finaliseExit({ from: accounts[1] })
+
+    pendingExit = await pool.exitRequests(accounts[1])
+    assert.equal(pendingExit.shares, 0, 'Pending amount is not zero')
+
+    updatedBalance = await weth.balanceOf(accounts[1])
+    assert.equal(updatedBalance.toString(), _1e18.mul(new BN(4800)).toString(), 'Weth balance didnt increase')
+
+    lpwethBalance = await pool.balanceOf(pool.address)
+    assert.equal(lpwethBalance.toString(), '0', 'LP tokens not burned')
   })
 
 })

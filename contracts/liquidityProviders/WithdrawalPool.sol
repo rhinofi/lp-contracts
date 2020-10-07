@@ -22,7 +22,7 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     uint256 requestTime;
   }
 
-  mapping (address => PendingExit) exitRequests;
+  mapping (address => PendingExit) public exitRequests;
 
   constructor (
     string memory _symbol,
@@ -65,7 +65,7 @@ contract WithdrawalPool is WithdrawalPoolToken  {
   }
 
   function exitPool(uint256 amountPoolShares) public {
-    _burn(msg.sender, amountPoolShares);
+    _transfer(msg.sender, address(this), amountPoolShares);
     emit LogPendingExit(msg.sender, poolToken, amountPoolShares);
     exitRequests[msg.sender].shares = exitRequests[msg.sender].shares.add(amountPoolShares);
     exitRequests[msg.sender].requestTime = now;
@@ -78,6 +78,7 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     if (now > pending.requestTime + MINIMUM_EXIT_PERIOD) {
       if (totalPoolSize().sub(lentSupply()) >= amountUnderlying) {
         IERC20(poolToken).safeTransfer(msg.sender, amountUnderlying);
+        _burn(address(this), pending.shares);
         exitRequests[msg.sender] = PendingExit({ shares: 0, requestTime: 0 });
         emit LogExit(msg.sender, poolToken, pending.shares);
         return true;
