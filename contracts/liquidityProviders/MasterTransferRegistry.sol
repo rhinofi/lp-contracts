@@ -24,7 +24,7 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
   // In future this fee can either be set via an equation related to the size of withdrawal and pool
   // Or via governance of LP token holders
   uint256 poolFee = 10;
-  // We must have 3x as much value in Nectar as collateral compared to what is lent out
+  // We must have 3x as much value in NEC as collateral compared to what is lent out
   uint256 reserveRatio = 3;
 
   constructor (
@@ -75,7 +75,9 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
   function lend(address erc20, uint256 amount) internal returns (bool) {
     lentSupply[erc20] = lentSupply[erc20].add(amount);
     require(lentSupply[erc20]<= IERC20(erc20).balanceOf(tokenPools[erc20]));
-    require(necExchangeRate(erc20, lentSupply[erc20]) <= totalNectar().div(reserveRatio));
+    uint256 equivalentLoanValueInNEC = necExchangeRate(erc20, lentSupply[erc20]);
+    require(equivalentLoanValueInNEC > 0);
+    require(equivalentLoanValueInNEC <= totalNEC().div(reserveRatio));
     return true;
   }
 
@@ -85,15 +87,15 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
     return true;
   }
 
-  function totalNectar() internal returns (uint256) {
+  function totalNEC() internal returns (uint256) {
     return IERC20(NEC).balanceOf(address(this));
   }
 
-  function stakeNectarCollateral(uint256 amount) external onlyOwner returns (bool) {
+  function stakeNECCollateral(uint256 amount) external onlyOwner returns (bool) {
     IERC20(NEC).safeTransferFrom(msg.sender, address(this), amount);
   }
 
-  function unStakeNectarCollateral(uint256 amount) external onlyOwner returns (bool) {
+  function unStakeNECCollateral(uint256 amount) external onlyOwner returns (bool) {
     IERC20(NEC).safeTransfer(msg.sender, amount);
   }
 
