@@ -65,14 +65,15 @@ contract OracleManager {
   // For a specified token and amount
   // Returns the equivalent value as a quantity of NEC
   // Returns the rate of NEC vs a specified token (token / nec) i.e. 0.3 weth / nec
-  function necExchangeRate(address token, uint256 amount) public view returns (uint256) {
+  function necExchangeRate(address token, uint256 amount) public view returns (uint256 price) {
     if (token == NEC) {
-      return amount;
+      price = amount;
+    } else if (token == WETH) {
+      price = W2TPrice[NEC].mul(amount).decode144();
+    } else {
+      price = T2WPrice[token].mul(amount).decode144() * W2TPrice[NEC].mul(1).decode144();
     }
-    if (token == WETH) {
-      return W2TPrice[NEC].mul(amount).decode144();
-    }
-    return T2WPrice[token].mul(amount).decode144() * W2TPrice[NEC].mul(1).decode144();
+    require(price != 0);
   }
 
   function registerNewOracle(address token) public returns (bool) {

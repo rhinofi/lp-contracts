@@ -1,5 +1,5 @@
 function logGasUsage (subject, transactionOrReceipt) {
-  let receipt = transactionOrReceipt.receipt || transactionOrReceipt
+  const receipt = transactionOrReceipt.receipt || transactionOrReceipt
   console.log('    Gas costs for ' + subject + ': ' + receipt.gasUsed)
 }
 
@@ -68,12 +68,21 @@ async function moveForwardTime (time) {
   return true
 }
 
+function assertEventOfType (response, eventName, index) {
+  assert.equal(response.logs[index].event, eventName, eventName + ' event should have fired.')
+}
+
+function getRandomSalt () {
+  return Math.floor(Math.random() * Math.floor(10000000))
+}
 
 module.exports = {
-    logGasUsage,
-    blockTime,
-    snapshot,
-    restore,
-    forceMine,
-    moveForwardTime
-};
+  logGasUsage,
+  blockTime,
+  snapshot,
+  restore,
+  forceMine,
+  moveForwardTime,
+  assertEventOfType,
+  getRandomSalt
+}
