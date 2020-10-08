@@ -18,14 +18,20 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
   string contractName;
 
   mapping (address => address) public tokenPools;
+  mapping (address => bool) internal isPool;
   mapping (address => uint256) public lentSupply;
 
   // 0.1% pool fee as basis points
   // In future this fee can either be set via an equation related to the size of withdrawal and pool
   // Or via governance of LP token holders
   uint256 poolFee = 10;
-  // We must have 3x as much value in NEC as collateral compared to what is lent out
-  uint256 reserveRatio = 3;
+  // Ratio of insurance fund to pool funds
+  uint256 reserveRatio = 2;
+
+  modifier onlyPool() {
+    require(isPool[msg.sender]);
+    _;
+  }
 
   constructor (
     address _uniswapFactory,
@@ -92,10 +98,18 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
 
   function stakeNECCollateral(uint256 amount) external onlyOwner returns (bool) {
     IERC20(NEC).safeTransferFrom(msg.sender, address(this), amount);
+    return true;
   }
 
   function unStakeNECCollateral(uint256 amount) external onlyOwner returns (bool) {
     IERC20(NEC).safeTransfer(msg.sender, amount);
+    return true;
+  }
+
+  function payFromInsuranceFund(address erc20, address recipient, uint256 amount) public onlyPool returns (bool) {
+    uint256 equivalentValueInNEC = necExchangeRate(erc20, amount);
+    IERC20(NEC).safeTransfer(recipient, equivalentValueInNEC.mul(reserveRatio));
+    return true;
   }
 
   function createNewPool(address _newPoolToken) public {
@@ -108,6 +122,7 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
       );
 
     tokenPools[_newPoolToken] = address(newPool);
+    isPool[address(newPool)] = true;
   }
 
 }

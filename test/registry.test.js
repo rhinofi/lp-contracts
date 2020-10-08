@@ -11,16 +11,8 @@ const UniswapV2Pair = contractInit(pairJson)
 UniswapV2Factory.setProvider(web3.currentProvider)
 UniswapV2Pair.setProvider(web3.currentProvider)
 
-function assertEventOfType (response, eventName, index) {
-  assert.equal(response.logs[index].event, eventName, eventName + ' event should have fired.')
-}
-
-function getRandomSalt () {
-  return Math.floor(Math.random() * Math.floor(10000000))
-}
-
 const catchRevert = require('./helpers/exceptions').catchRevert
-const moveForwardTime = require('./helpers/utils').moveForwardTime
+const { moveForwardTime, getRandomSalt, assertEventOfType } = require('./helpers/utils')
 const BN = web3.utils.BN
 const _1e18 = new BN('1000000000000000000')
 

@@ -11,11 +11,7 @@ const UniswapV2Pair = contractInit(pairJson)
 UniswapV2Factory.setProvider(web3.currentProvider)
 UniswapV2Pair.setProvider(web3.currentProvider)
 
-function assertEventOfType (response, eventName, index) {
-  assert.equal(response.logs[index].event, eventName, eventName + ' event should have fired.')
-}
-
-const { blockTime, moveForwardTime } = require('./helpers/utils')
+const { blockTime, moveForwardTime, getRandomSalt, assertEventOfType } = require('./helpers/utils')
 const BN = web3.utils.BN
 const _1e18 = new BN('1000000000000000000')
 
@@ -44,6 +40,16 @@ contract('WithdrawalPool', (accounts) => {
     await weth.mint(accounts[1], _1e18.mul(new BN(5000)))
     const poolAddress = await registry.tokenPools(weth.address)
     pool = await WithdrawalPool.at(poolAddress)
+
+    await moveForwardTime(86400)
+    await weth.transfer(uni.address, _1e18.mul(new BN(4)))
+    await nectar.transfer(uni.address, _1e18.mul(new BN(5000)))
+    await uni.mint(accounts[0], { from: accounts[0] })
+
+    await registry.updateExchangeRate(nectar.address)
+    const price = await registry.necExchangeRate(weth.address, _1e18)
+    const expectedRatio = new BN(1250)
+    assert.equal(price.toString(), _1e18.mul(expectedRatio).toString(), 'Price was not updated')
   })
 
   it('deploy: pool gets deployed and has correct pool token address', async () => {
@@ -127,6 +133,37 @@ contract('WithdrawalPool', (accounts) => {
     assert.equal(updatedBalance.toString(), _1e18.mul(new BN(4800)).toString(), 'Weth balance didnt increase')
 
     lpwethBalance = await pool.balanceOf(pool.address)
+    assert.equal(lpwethBalance.toString(), '0', 'LP tokens not burned')
+  })
+
+  it('exitPool and finaliseExit: if insufficient funds in the pool after MAXIMUM_EXIT_PERIOD, LP tokens are destroyed and Nectar insurance funds are paid out', async () => {
+    const depositAmount = _1e18.mul(new BN(20))
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    await pool.joinPool(depositAmount, { from: accounts[1] })
+    const newBalance = await weth.balanceOf(accounts[1])
+    assert.equal(newBalance.toString(), _1e18.mul(new BN(5000)).sub(depositAmount).toString(), 'Token not transfered')
+
+    const exitAmount = _1e18.mul(new BN(100))
+    pool.exitPool(exitAmount, { from: accounts[1] })
+
+    // Transfer the funds out so the pool is empty
+    const stakeAmount = _1e18.mul(new BN(1000000))
+    await nectar.mint(accounts[0], stakeAmount)
+    await nectar.approve(registry.address, stakeAmount)
+    await registry.stakeNECCollateral(stakeAmount)
+    await registry.transferERC20(weth.address, accounts[8], depositAmount, getRandomSalt())
+
+    await moveForwardTime(86400 * 2) // days
+
+    await pool.finaliseExit(accounts[1], { from: accounts[1] })
+
+    const pendingExit = await pool.exitRequests(accounts[1])
+    assert.equal(pendingExit.shares, 0, 'Pending amount is not zero')
+
+    const nectarBalance = await nectar.balanceOf(accounts[1])
+    assert.equal(nectarBalance.toString(), _1e18.mul(new BN(50050)).toString(), 'Did not receieve any Nectar')
+
+    const lpwethBalance = await pool.balanceOf(pool.address)
     assert.equal(lpwethBalance.toString(), '0', 'LP tokens not burned')
   })
 

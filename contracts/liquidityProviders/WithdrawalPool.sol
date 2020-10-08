@@ -51,6 +51,12 @@ contract WithdrawalPool is WithdrawalPoolToken  {
       uint256 shares
   );
 
+  event LogInsuranceClaim(
+      address leaver,
+      address token,
+      uint256 shares
+  );
+
   function joinPool(uint256 amountUnderlying) public {
     uint256 totalPoolShares = totalSupply();
     uint256 newPoolShares;
@@ -85,12 +91,17 @@ contract WithdrawalPool is WithdrawalPoolToken  {
       }
     }
     if (now > pending.requestTime + MAXIMUM_EXIT_PERIOD) {
-      // This is where something has gone wrong and we allow claiming of NEC
-      // Make the exit no longer frozen
-      // Transfer the LP tokens to DeversiFi but mark them as locked
+      payFromInsuranceFund(exiter, amountUnderlying);
+      _burn(address(this), pending.shares);
+      exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
+      emit LogInsuranceClaim(exiter, poolToken, pending.shares);
       return true;
     }
     return false;
+  }
+
+  function payFromInsuranceFund(address toPay, uint256 amount) internal returns (bool) {
+    return MasterTransferRegistry(transferRegistry).payFromInsuranceFund(poolToken, toPay, amount);
   }
 
   function totalPoolSize() public view returns (uint256) {
