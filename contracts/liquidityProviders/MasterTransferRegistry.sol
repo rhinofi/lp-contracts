@@ -82,7 +82,7 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
   }
 
   function repay(address erc20, uint256 amount) external returns (bool) {
-    lentSupply[erc20].sub(amount);
+    lentSupply[erc20] = lentSupply[erc20].sub(amount);
     IERC20(erc20).safeTransferFrom(msg.sender, tokenPools[erc20], amount);
     return true;
   }

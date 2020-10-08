@@ -97,4 +97,28 @@ contract('MasterTransferRegistry', (accounts) => {
     assert.equal(balanceStart.toString(), balanceAfter.add(transferAmountAfterFee).toString(), 'Amount not transfered')
   })
 
+  it('repay: can repay weth from pool to set lentSupply back to zero', async () => {
+    const stakeAmount = _1e18.mul(new BN(1000000))
+    await nectar.mint(accounts[0], stakeAmount)
+    await nectar.approve(registry.address, stakeAmount)
+    await registry.stakeNECCollateral(stakeAmount)
+
+    const balanceStart = await weth.balanceOf(pool.address)
+
+    const transferAmount = _1e18.mul(new BN(5))
+    const transferAmountAfterFee = transferAmount.mul(new BN(999)).div(new BN(1000))
+    await registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt())
+
+    const balanceAfter = await weth.balanceOf(pool.address)
+
+    assert.equal(balanceStart.toString(), balanceAfter.add(transferAmountAfterFee).toString(), 'Amount not transfered')
+
+    assert.equal((await registry.lentSupply(weth.address)).toString(), transferAmount.toString(), 'Lent amount not recorded correctly')
+
+    await weth.approve(registry.address, transferAmount)
+    await registry.repay(weth.address, transferAmount)
+
+    assert.equal((await registry.lentSupply(weth.address)).toString(), '0', 'Lent amount not cleared after repay')
+  })
+
 })
