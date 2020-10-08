@@ -71,21 +71,23 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     exitRequests[msg.sender].requestTime = now;
   }
 
-  function finaliseExit() public returns (bool) {
-    PendingExit memory pending = exitRequests[msg.sender];
+  function finaliseExit(address exiter) public returns (bool) {
+    PendingExit memory pending = exitRequests[exiter];
     uint256 totalPoolShares = totalSupply();
     uint256 amountUnderlying = pending.shares.mul(totalPoolSize()).div(totalPoolShares);
     if (now > pending.requestTime + MINIMUM_EXIT_PERIOD) {
       if (totalPoolSize().sub(lentSupply()) >= amountUnderlying) {
-        IERC20(poolToken).safeTransfer(msg.sender, amountUnderlying);
+        IERC20(poolToken).safeTransfer(exiter, amountUnderlying);
         _burn(address(this), pending.shares);
-        exitRequests[msg.sender] = PendingExit({ shares: 0, requestTime: 0 });
-        emit LogExit(msg.sender, poolToken, pending.shares);
+        exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
+        emit LogExit(exiter, poolToken, pending.shares);
         return true;
       }
     }
     if (now > pending.requestTime + MAXIMUM_EXIT_PERIOD) {
       // This is where something has gone wrong and we allow claiming of NEC
+      // Make the exit no longer frozen
+      // Transfer the LP tokens to DeversiFi but mark them as locked
       return true;
     }
     return false;

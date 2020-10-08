@@ -108,7 +108,7 @@ contract('WithdrawalPool', (accounts) => {
     assert.equal(pendingExit.requestTime, await blockTime(), 'Time of request not set correctly')
 
     // Initialy finaliseExit will not work because time has not passed
-    await pool.finaliseExit({ from: accounts[1] })
+    await pool.finaliseExit(accounts[1], { from: accounts[1] })
 
     pendingExit = await pool.exitRequests(accounts[1])
     assert.equal(pendingExit.shares.toString(), exitAmount.toString(), 'Pending amount has not changed')
@@ -118,7 +118,7 @@ contract('WithdrawalPool', (accounts) => {
 
     await moveForwardTime(86400)
 
-    await pool.finaliseExit({ from: accounts[1] })
+    await pool.finaliseExit(accounts[1], { from: accounts[1] })
 
     pendingExit = await pool.exitRequests(accounts[1])
     assert.equal(pendingExit.shares, 0, 'Pending amount is not zero')
