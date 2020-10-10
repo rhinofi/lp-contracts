@@ -20,6 +20,9 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   mapping (address => address) public tokenPools;
   mapping (address => bool) internal isPool;
   mapping (address => uint256) public lentSupply;
+  mapping (address => uint256) public lentSupplyEquivNEC;
+
+  uint256 public allPoolsLentSupplyEquivNEC;
 
   // In future this fee can either be set via an equation related to the size of withdrawal and pool
   // Or via governance of LP token holders
@@ -73,7 +76,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       require(!_factCheck(transferFact), "TRANSFER_ALREADY_REGISTERED");
       registerFact(transferFact);
       emit LogRegisteredTransfer(recipient, erc20, amount, salt);
-      borrowFromPool(erc20, amount);
+      recordBorrowingFromPool(erc20, amount);
       IERC20(erc20).safeTransferFrom(tokenPools[erc20], recipient, calculateAmountMinusFee(amount));
   }
 
@@ -81,15 +84,18 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     return amount.mul(sendAfterFee).div(10000);
   }
 
-  function borrowFromPool(address erc20, uint256 amount) internal returns (bool) {
+  function recordBorrowingFromPool(address erc20, uint256 amount) internal returns (bool) {
+    allPoolsLentSupplyEquivNEC = allPoolsLentSupplyEquivNEC.sub(lentSupplyEquivNEC[erc20]);
     lentSupply[erc20] = lentSupply[erc20].add(amount);
-    uint256 equivalentLoanValueInNEC = necExchangeRate(erc20, lentSupply[erc20]);
-    require(equivalentLoanValueInNEC <= totalNEC().div(reserveRatio));
+    lentSupplyEquivNEC[erc20] = necExchangeRate(erc20, lentSupply[erc20]);
+    allPoolsLentSupplyEquivNEC = allPoolsLentSupplyEquivNEC.add(lentSupplyEquivNEC[erc20]);
+    require(allPoolsLentSupplyEquivNEC <= totalNEC().div(reserveRatio));
     return true;
   }
 
-  function repay(address erc20, uint256 amount) external returns (bool) {
+  function repayToPool(address erc20, uint256 amount) external returns (bool) {
     lentSupply[erc20] = lentSupply[erc20].sub(amount);
+    // Note that to save gas we do not recalculate lentSupplyEquivNEC here since it will be calculated when the next transfer out is made, and is not needed until then
     IERC20(erc20).safeTransferFrom(msg.sender, tokenPools[erc20], amount);
     return true;
   }

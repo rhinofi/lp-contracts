@@ -120,7 +120,7 @@ contract('MasterTransferRegistry', (accounts) => {
     assert.equal((await registry.lentSupply(weth.address)).toString(), transferAmount.toString(), 'Lent amount not recorded correctly')
 
     await weth.approve(registry.address, transferAmount)
-    await registry.repay(weth.address, transferAmount)
+    await registry.repayToPool(weth.address, transferAmount)
 
     assert.equal((await registry.lentSupply(weth.address)).toString(), '0', 'Lent amount not cleared after repay')
   })
