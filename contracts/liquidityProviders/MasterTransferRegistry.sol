@@ -23,7 +23,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
   // In future this fee can either be set via an equation related to the size of withdrawal and pool
   // Or via governance of LP token holders
-  uint256 poolFee;
+  uint256 sendAfterFee;
   // Ratio of insurance fund to pool funds
   uint256 reserveRatio;
 
@@ -40,7 +40,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     __OracleManager_init(_uniswapFactory, _WETH, _NEC);
     __Ownable_init();
     contractName = string(abi.encodePacked("DeversiFi_MasterTransferRegistry_v0.0.1"));
-    poolFee = 10;
+    sendAfterFee = 9990;
     reserveRatio = 2;
   }
 
@@ -77,13 +77,12 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       IERC20(erc20).safeTransferFrom(tokenPools[erc20], recipient, calculateAmountMinusFee(amount));
   }
 
-  function calculateAmountMinusFee(uint256 amount) internal returns (uint256) {
-    return amount.sub(amount.mul(poolFee).div(10000));
+  function calculateAmountMinusFee(uint256 amount) internal view returns (uint256) {
+    return amount.mul(sendAfterFee).div(10000);
   }
 
   function borrowFromPool(address erc20, uint256 amount) internal returns (bool) {
     lentSupply[erc20] = lentSupply[erc20].add(amount);
-    require(lentSupply[erc20]<= IERC20(erc20).balanceOf(tokenPools[erc20]));
     uint256 equivalentLoanValueInNEC = necExchangeRate(erc20, lentSupply[erc20]);
     require(equivalentLoanValueInNEC <= totalNEC().div(reserveRatio));
     return true;
@@ -95,7 +94,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     return true;
   }
 
-  function totalNEC() internal returns (uint256) {
+  function totalNEC() internal view returns (uint256) {
     return IERC20(NEC).balanceOf(address(this));
   }
 

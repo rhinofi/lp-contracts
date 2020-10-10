@@ -1,3 +1,6 @@
 /node_modules
 build/*
 artifacts/*
+/coverage
+coverage.json
+.openzeppelin

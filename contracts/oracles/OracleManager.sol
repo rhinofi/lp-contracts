@@ -73,7 +73,7 @@ contract OracleManager is Initializable {
     } else if (token == WETH) {
       price = W2TPrice[NEC].mul(amount).decode144();
     } else {
-      price = T2WPrice[token].mul(amount).decode144() * W2TPrice[NEC].mul(1).decode144();
+      price = T2WPrice[token].mul(amount).decode144() * W2TPrice[NEC].decode();
     }
     require(price != 0);
   }
