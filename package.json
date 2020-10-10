@@ -21,6 +21,8 @@
   "homepage": "https://github.com/DeversiFi/lp-contracts#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^3.2.0",
+    "@openzeppelin/contracts-ethereum-package": "^3.0.0",
+    "@openzeppelin/truffle-upgrades": "^1.1.1",
     "@truffle/contract": "^4.2.24",
     "@uniswap/lib": "^1.1.4",
     "@uniswap/v2-core": "^1.0.1"

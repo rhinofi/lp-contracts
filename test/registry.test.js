@@ -1,4 +1,6 @@
 /* global it, contract, artifacts, assert, web3 */
+const { deployProxy} = require('@openzeppelin/truffle-upgrades')
+
 const WithdrawalPool = artifacts.require('./WithdrawalPool.sol')
 const MasterTransferRegistry = artifacts.require('./MasterTransferRegistry.sol')
 const MintableERC20 = artifacts.require('./MintableERC20.sol')
@@ -36,7 +38,7 @@ contract('MasterTransferRegistry', (accounts) => {
     await nectar.transfer(uni.address, _1e18.mul(new BN(50000)))
     await uni.mint(accounts[0], { from: accounts[0] })
 
-    registry = await MasterTransferRegistry.new(factory.address, weth.address, nectar.address)
+    registry = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address])
     await registry.createNewPool(weth.address)
     await weth.mint(accounts[1], _1e18.mul(new BN(5000)))
     const poolAddress = await registry.tokenPools(weth.address)

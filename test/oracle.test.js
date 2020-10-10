@@ -1,5 +1,7 @@
 /* global it, contract, artifacts, assert, web3 */
-const OracleManager = artifacts.require('./OracleManager.sol')
+const { deployProxy } = require('@openzeppelin/truffle-upgrades')
+
+const MasterTransferRegistry = artifacts.require('./MasterTransferRegistry.sol')
 const MintableERC20 = artifacts.require('./MintableERC20.sol')
 const factoryJson = require('@uniswap/v2-core/build/UniswapV2Factory.json')
 const pairJson = require('@uniswap/v2-core/build/UniswapV2Pair.json')
@@ -34,7 +36,7 @@ contract('OracleManager', (accounts) => {
     await nectar.transfer(pool.address, _1e18.mul(new BN(50000)))
     await pool.mint(accounts[0], { from: accounts[0] })
 
-    oracle = await OracleManager.new(factory.address, weth.address, nectar.address)
+    oracle = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address])
   })
 
   it('deploy: oracle manager and uniswap pair get deployed', async () => {
@@ -48,11 +50,17 @@ contract('OracleManager', (accounts) => {
     const address = await oracle.uniswapFactory()
     assert.equal(address, factory.address, 'Contract not properly deployed')
     const token0 = await pool.token0()
-    assert.equal(token0, weth.address, 'Pool not created')
-
+    const token1 = await pool.token1()
     const reserves = await pool.getReserves()
-    const priceRatio = reserves._reserve1.div(reserves._reserve0)
-    assert.equal(priceRatio.toString(), 1250, 'Reserve ratio not correct')
+    try {
+      assert.equal(token0, weth.address, 'Pool not created')
+      const priceRatio = reserves._reserve1.div(reserves._reserve0)
+      assert.equal(priceRatio.toString(), 1250, 'Reserve ratio not correct')
+    } catch (err) {
+      assert.equal(token1, weth.address, 'Pool not created')
+      const priceRatio = reserves._reserve0.div(reserves._reserve1)
+      assert.equal(priceRatio.toString(), 1250, 'Reserve ratio not correct')
+    }
   })
 
   it('registerNewOracle: oracle manager tracks new uniswap pair for USDT/WETH', async () => {
@@ -82,7 +90,6 @@ contract('OracleManager', (accounts) => {
   })
 
   it('updateExchangeRate: returns correct price for WETH to NEC after update', async () => {
-
     // There needs to be some history on uniswap in order for it to give prices
     // So here we wait a few blocks and then add more liquidity
     await moveForwardTime(86400)

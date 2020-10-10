@@ -4,14 +4,14 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 
 import "../starkEx/FactRegistry.sol";
 import "../starkEx/Identity.sol";
 import "./WithdrawalPool.sol";
 import "../oracles/OracleManager.sol";
 
-contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownable  {
+contract MasterTransferRegistry is Initializable, FactRegistry, Identity, OracleManager, OwnableUpgradeSafe  {
   using SafeERC20 for IERC20;
   using SafeMath for uint256;
 
@@ -21,24 +21,27 @@ contract MasterTransferRegistry is FactRegistry, Identity, OracleManager, Ownabl
   mapping (address => bool) internal isPool;
   mapping (address => uint256) public lentSupply;
 
-  // 0.1% pool fee as basis points
   // In future this fee can either be set via an equation related to the size of withdrawal and pool
   // Or via governance of LP token holders
-  uint256 poolFee = 10;
+  uint256 poolFee;
   // Ratio of insurance fund to pool funds
-  uint256 reserveRatio = 2;
+  uint256 reserveRatio;
 
   modifier onlyPool() {
     require(isPool[msg.sender]);
     _;
   }
 
-  constructor (
+  function initialize(
     address _uniswapFactory,
     address _WETH,
     address _NEC
-  ) public OracleManager(_uniswapFactory, _WETH, _NEC){
+  ) public initializer {
+    __OracleManager_init(_uniswapFactory, _WETH, _NEC);
+    __Ownable_init();
     contractName = string(abi.encodePacked("DeversiFi_MasterTransferRegistry_v0.0.1"));
+    poolFee = 10;
+    reserveRatio = 2;
   }
 
   function identify()

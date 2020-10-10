@@ -6,7 +6,9 @@ import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol';
 import "./UniswapV2OracleLibrary.sol";
 import "./UniswapV2Library.sol";
 
-contract OracleManager {
+import "@openzeppelin/contracts-ethereum-package/contracts/Initializable.sol";
+
+contract OracleManager is Initializable {
   using FixedPoint for *;
 
   address public uniswapFactory;
@@ -25,7 +27,7 @@ contract OracleManager {
 
   mapping (address => IUniswapV2Pair) public uniswapPairs;
 
-  constructor(address _factory, address _WETH, address _NEC) public {
+  function __OracleManager_init(address _factory, address _WETH, address _NEC) internal initializer {
     uniswapFactory = _factory;
     WETH = _WETH;
     NEC = _NEC;
