@@ -125,4 +125,26 @@ contract('MasterTransferRegistry', (accounts) => {
     assert.equal((await registry.lentSupply(weth.address)).toString(), '0', 'Lent amount not cleared after repay')
   })
 
+  it('unstakeNECCollateral: cannot unstake NEC used to insure lent funds', async () => {
+    const stakeAmount = _1e18.mul(new BN(1000000))
+    await nectar.mint(accounts[0], stakeAmount)
+    await nectar.approve(registry.address, stakeAmount)
+    await registry.stakeNECCollateral(stakeAmount)
+
+    const transferAmount = _1e18.mul(new BN(5))
+    await registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt())
+
+    assert.equal((await registry.lentSupply(weth.address)).toString(), transferAmount.toString(), 'Lent amount not recorded correctly')
+
+    // Can't withdraw all
+    await catchRevert(registry.unstakeNECCollateral(stakeAmount))
+
+    // Can withdraw nearly all
+    const requiredRemainingStake = transferAmount.mul(new BN(1250)).mul(new BN(2))
+    await registry.unstakeNECCollateral(stakeAmount.sub(requiredRemainingStake))
+
+    // Cannot withdraw any more
+    await catchRevert(registry.unStakeNECCollateral(transferAmount))
+  })
+
 })

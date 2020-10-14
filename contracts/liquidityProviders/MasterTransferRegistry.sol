@@ -109,7 +109,9 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     return true;
   }
 
-  function unStakeNECCollateral(uint256 amount) external onlyOwner returns (bool) {
+  function unstakeNECCollateral(uint256 amount) external onlyOwner returns (bool) {
+    uint256 currentBalance = IERC20(NEC).balanceOf(address(this));
+    require(allPoolsLentSupplyEquivNEC.mul(reserveRatio) <= currentBalance.sub(amount));
     IERC20(NEC).safeTransfer(msg.sender, amount);
     return true;
   }
