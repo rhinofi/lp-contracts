@@ -36,7 +36,8 @@ contract WithdrawalPool is WithdrawalPoolToken  {
   event LogJoinedPool(
       address joiner,
       address token,
-      uint256 shares
+      uint256 amountToken,
+      uint256 amountShares
   );
 
   event LogPendingExit(
@@ -48,13 +49,15 @@ contract WithdrawalPool is WithdrawalPoolToken  {
   event LogExit(
       address leaver,
       address token,
-      uint256 shares
+      uint256 amountToken,
+      uint256 amountShares
   );
 
   event LogInsuranceClaim(
       address leaver,
       address token,
-      uint256 shares
+      uint256 amountToken,
+      uint256 amountShares
   );
 
   function joinPool(uint256 amountUnderlying) public {
@@ -65,7 +68,7 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     } else {
        newPoolShares = totalPoolShares.mul(amountUnderlying).div(totalPoolSize());
     }
-    emit LogJoinedPool(msg.sender, poolToken, newPoolShares);
+    emit LogJoinedPool(msg.sender, poolToken, amountUnderlying, newPoolShares);
     IERC20(poolToken).safeTransferFrom(msg.sender, address(this), amountUnderlying);
     _mint(msg.sender, newPoolShares);
   }
@@ -86,7 +89,7 @@ contract WithdrawalPool is WithdrawalPoolToken  {
         IERC20(poolToken).safeTransfer(exiter, amountUnderlying);
         _burn(address(this), pending.shares);
         exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
-        emit LogExit(exiter, poolToken, pending.shares);
+        emit LogExit(exiter, poolToken, amountUnderlying, pending.shares);
         return true;
       }
     }
@@ -94,7 +97,7 @@ contract WithdrawalPool is WithdrawalPoolToken  {
       payFromInsuranceFund(exiter, amountUnderlying);
       _burn(address(this), pending.shares);
       exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
-      emit LogInsuranceClaim(exiter, poolToken, pending.shares);
+      emit LogInsuranceClaim(exiter, poolToken, amountUnderlying, pending.shares);
       return true;
     }
     return false;
@@ -110,6 +113,10 @@ contract WithdrawalPool is WithdrawalPoolToken  {
 
   function lentSupply() internal view returns (uint256) {
     return MasterTransferRegistry(transferRegistry).lentSupply(poolToken);
+  }
+
+  function underlyingTokensOwned(address owner) public view returns (uint256) {
+    return totalPoolSize().mul(balanceOf(owner)).div(totalSupply());
   }
 
 }

@@ -61,6 +61,32 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       uint256 salt
   );
 
+  event LogRepaid(
+      address recipient,
+      address token,
+      uint256 amount
+  );
+
+  event LogInsurancePayout(
+      address recipient,
+      uint256 amount
+  );
+
+  event LogStakedNEC(
+      address staker,
+      uint256 amount
+  );
+
+  event LogUnstakedNEC(
+      address staker,
+      uint256 amount
+  );
+
+  event LogNewPoolCreated(
+      address underlyingToken,
+      address newPool
+  );
+
   /*
     Transfer the specified amount of erc20 tokens from msg.sender balance to the recipient's
     balance.
@@ -97,6 +123,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     lentSupply[erc20] = lentSupply[erc20].sub(amount);
     // Note that to save gas we do not recalculate lentSupplyEquivNEC here since it will be calculated when the next transfer out is made, and is not needed until then
     IERC20(erc20).safeTransferFrom(msg.sender, tokenPools[erc20], amount);
+    emit LogRepaid(msg.sender, erc20, amount);
     return true;
   }
 
@@ -106,6 +133,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
   function stakeNECCollateral(uint256 amount) external onlyOwner returns (bool) {
     IERC20(NEC).safeTransferFrom(msg.sender, address(this), amount);
+    emit LogStakedNEC(msg.sender, amount);
     return true;
   }
 
@@ -113,12 +141,14 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     uint256 currentBalance = IERC20(NEC).balanceOf(address(this));
     require(allPoolsLentSupplyEquivNEC.mul(reserveRatio) <= currentBalance.sub(amount));
     IERC20(NEC).safeTransfer(msg.sender, amount);
+    emit LogUnstakedNEC(msg.sender, amount);
     return true;
   }
 
   function payFromInsuranceFund(address erc20, address recipient, uint256 amount) public onlyPool returns (bool) {
     uint256 equivalentValueInNEC = necExchangeRate(erc20, amount);
     IERC20(NEC).safeTransfer(recipient, equivalentValueInNEC.mul(reserveRatio));
+    emit LogInsurancePayout(recipient, amount);
     return true;
   }
 
@@ -133,6 +163,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
     tokenPools[_newPoolToken] = address(newPool);
     isPool[address(newPool)] = true;
+    emit LogNewPoolCreated(_newPoolToken, address(newPool));
   }
 
 }

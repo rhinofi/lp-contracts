@@ -144,7 +144,7 @@ contract('MasterTransferRegistry', (accounts) => {
     await registry.unstakeNECCollateral(stakeAmount.sub(requiredRemainingStake))
 
     // Cannot withdraw any more
-    await catchRevert(registry.unStakeNECCollateral(transferAmount))
+    await catchRevert(registry.unstakeNECCollateral(transferAmount))
   })
 
 })
