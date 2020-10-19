@@ -10,6 +10,7 @@ import "../starkEx/FactRegistry.sol";
 import "../starkEx/Identity.sol";
 import "./WithdrawalPool.sol";
 import "../oracles/OracleManager.sol";
+import "../tokens/IWETH.sol";
 
 contract MasterTransferRegistry is Initializable, FactRegistry, Identity, OracleManager, OwnableUpgradeSafe  {
   using SafeERC20 for IERC20;
@@ -104,6 +105,20 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       emit LogRegisteredTransfer(recipient, erc20, amount, salt);
       recordBorrowingFromPool(erc20, amount);
       IERC20(erc20).safeTransferFrom(tokenPools[erc20], recipient, calculateAmountMinusFee(amount));
+  }
+
+  function transferETH(address recipient, uint256 amount, uint256 salt)
+      external onlyOwner {
+      bytes32 transferFact = keccak256(
+          abi.encodePacked(recipient, amount, address(0), salt));
+      require(!_factCheck(transferFact), "TRANSFER_ALREADY_REGISTERED");
+      registerFact(transferFact);
+      emit LogRegisteredTransfer(recipient, address(0), amount, salt);
+      recordBorrowingFromPool(WETH, amount);
+      uint256 adjustedAmount = calculateAmountMinusFee(amount);
+      IERC20(WETH).safeTransferFrom(tokenPools[WETH], address(this), adjustedAmount);
+      IWETH(WETH).deposit.value(adjustedAmount)();
+      IERC20(WETH).safeTransfer(recipient, adjustedAmount);
   }
 
   function calculateAmountMinusFee(uint256 amount) internal view returns (uint256) {
