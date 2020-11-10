@@ -20,6 +20,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
   mapping (address => address) public tokenPools;
   mapping (address => bool) internal isPool;
+  mapping (address => uint256) public isAaveActive;
   mapping (address => uint256) public lentSupply;
   mapping (address => uint256) public lentSupplyEquivNEC;
 
@@ -199,6 +200,8 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     targetAvailabilityPercentage = newPercentage;
   }
 
-
+  function setAaveIsActive(address poolAddress, bool isActive) external onlyOwner {
+    isAaveActive[poolAddress] = isActive;
+  }
 
 }

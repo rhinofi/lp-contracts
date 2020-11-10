@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "./WithdrawalPoolToken.sol";
 import "./MasterTransferRegistry.sol";
+import "../aave/AaveManager.sol";
 
-contract WithdrawalPool is WithdrawalPoolToken  {
+contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   using SafeERC20 for IERC20;
   using SafeMath for uint256;
 
@@ -163,14 +164,24 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     return 100 - targetAvailabilityPercentage();
   }
 
+  function isAaveActive() internal view returns (bool) {
+    return MasterTransferRegistry(transferRegistry).isAaveActive(address(this));
+  }
+
   // RESERVED BALANCE - Internal functions for managing reserved balances
 
   function increaseReservedBalance(uint256 amount) internal {
     reservedUnderlyingBalance = reservedUnderlyingBalance.add(amount.mul(targetReservedPercentage()).div(100));
+    if (isAaveActive()) {
+      // Deposit to aave
+    }
   }
 
   function resetReservedBalance(uint256 amount) internal {
     reservedUnderlyingBalance = totalPoolSize().sub(amount).mul(targetReservedPercentage()).div(100);
+    if (isAaveActive()) {
+      // Withdraw from aave
+    }
   }
 
 }

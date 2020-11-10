@@ -65,8 +65,6 @@ DeversiFi stakes NEC (the governance token of DeversiFi) as an insurance collate
 1. The transferERC20 function should be optimised for lower gas usage (currently around 170k), since this function will need to be called frequently.
 2. There is a known vulnerability around exit of funds by liquidity providers from the pool. The issue is as follows:
   - An LP requests an exit, but does not finalise this. They wait until the contract does not have enough of the relevant token to fulfil the request, and then finally exits, allowing them to claim NEC worth more than their original share of the pool (due to the insurance fund paying out a multiple to dis-incentivise DeversiFi from not returning funds quickly).
-  - A more elegant solution to exits should be implemented if possible, however one mitigation to this is that *anyone* may call the finalise function to exit LP funds, not only the LP (meaning DeversiFi could call it if they were aware of someone attempting this). However this has a gas cost associated with it.
+  - One mitigation to this is that *anyone* may call the finalise function to exit LP funds, not only the LP (meaning DeversiFi could call it if they were aware of someone attempting this). However this has a gas cost associated with it.
 3. General gas optimisation and simplification where possible.
 4. More complete test coverage (including upgrade testing for MasterTransferRegistry)
-5. Remo at StarkWare to review
-6. Audit to be completed by independent 3rd party
