@@ -94,21 +94,73 @@ contract('WithdrawalPool', (accounts) => {
     assert.equal(lpTokenBalance3.toString(), _1e18.mul(new BN(40)).toString(), 'Third depositor not give LP tokens at correct ratio')
   })
 
-  it('exitPool and finaliseExit: LP tokens are destroyed and share of pool put into pending state', async () => {
-    const depositAmount = _1e18.mul(new BN(1000))
+  // EXIT TESTS
+
+  async function depositToPool (amount) {
+    const initialShares = await pool.balanceOf(accounts[1])
+    const totalShares = await pool.totalSupply()
+    const totalDeposited = await pool.totalPoolSize()
+    const depositAmount = _1e18.mul(new BN(amount))
     await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    const initialBalance = await weth.balanceOf(accounts[1])
     await pool.joinPool(depositAmount, { from: accounts[1] })
     const newBalance = await weth.balanceOf(accounts[1])
-    assert.equal(newBalance.toString(), _1e18.mul(new BN(5000)).sub(depositAmount).toString(), 'Token not transfered')
+    assert.equal(newBalance.toString(), initialBalance.sub(depositAmount).toString(), 'Token not transfered')
 
-    const expectedShares = _1e18.mul(new BN(100))
-    let lpwethBalance = await pool.balanceOf(accounts[1])
+    let expectedShares
+    if (initialShares.toString() === '0') {
+      expectedShares = _1e18.mul(new BN(100))
+    } else {
+      const newShares = totalShares.mul(depositAmount).div(totalDeposited)
+      expectedShares = initialShares.add(newShares)
+    }
+    const lpwethBalance = await pool.balanceOf(accounts[1])
     assert.equal(lpwethBalance.toString(), expectedShares.toString(), 'Initial mint for first depositor was not 100')
+  }
+
+  async function checkReservedBalance (expected) {
+    const expectedReservedBalance = typeof expected === 'number'
+      ? _1e18.mul(new BN(expected))
+      : expected
+    const reservedBalance = await pool.reservedUnderlyingBalance()
+    assert.equal(reservedBalance.toString(), expectedReservedBalance.toString(), 'Balance was reserved')
+  }
+
+  async function exitPoolAndCheckCompletedInstantly (amount) {
+    const initialBalance = await weth.balanceOf(accounts[1])
+    const lpwethUserBalanceInitial = await pool.balanceOf(accounts[1])
+
+    const exitAmount = _1e18.mul(new BN(amount))
+    pool.exitPool(exitAmount, { from: accounts[1] })
+
+    const lpwethContractBalance = await pool.balanceOf(pool.address)
+    const lpwethUserBalance = await pool.balanceOf(accounts[1])
+    assert.equal(lpwethContractBalance.toString(), '0', 'LP tokens were transfered to the pool')
+    assert.equal(lpwethUserBalance.toString(), lpwethUserBalanceInitial.sub(exitAmount).toString(), 'User LP tokens were not burned')
+
+    const updatedBalance = await weth.balanceOf(accounts[1])
+    assert.equal(updatedBalance.sub(initialBalance) > 0, true, 'Weth balance didnt increase')
+  }
+
+  it('exitPool: If exit is less than 20% complete in one transaction', async () => {
+    await depositToPool(1000)
+
+    await checkReservedBalance(800)
+
+    await exitPoolAndCheckCompletedInstantly(15)
+
+    await checkReservedBalance(800)
+  })
+
+  it('exitPool and finaliseExit: If exit is more than 20% LP tokens are destroyed and share of pool put into pending state', async () => {
+    await depositToPool(1000)
+    const depositAmount = _1e18.mul(new BN(1000))
 
     const exitAmount = _1e18.mul(new BN(80))
     pool.exitPool(exitAmount, { from: accounts[1] })
 
-    lpwethBalance = await pool.balanceOf(accounts[1])
+    const expectedShares = _1e18.mul(new BN(100))
+    let lpwethBalance = await pool.balanceOf(accounts[1])
     assert.equal(lpwethBalance.toString(), expectedShares.sub(exitAmount).toString(), 'LP tokens not transfered away')
 
     let pendingExit = await pool.exitRequests(accounts[1])
@@ -139,11 +191,8 @@ contract('WithdrawalPool', (accounts) => {
   })
 
   it('exitPool and finaliseExit: if insufficient funds in the pool after MAXIMUM_EXIT_PERIOD, LP tokens are destroyed and Nectar insurance funds are paid out', async () => {
+    await depositToPool(20)
     const depositAmount = _1e18.mul(new BN(20))
-    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
-    await pool.joinPool(depositAmount, { from: accounts[1] })
-    const newBalance = await weth.balanceOf(accounts[1])
-    assert.equal(newBalance.toString(), _1e18.mul(new BN(5000)).sub(depositAmount).toString(), 'Token not transfered')
 
     const exitAmount = _1e18.mul(new BN(100))
     pool.exitPool(exitAmount, { from: accounts[1] })
@@ -167,6 +216,46 @@ contract('WithdrawalPool', (accounts) => {
 
     const lpwethBalance = await pool.balanceOf(pool.address)
     assert.equal(lpwethBalance.toString(), '0', 'LP tokens not burned')
+  })
+
+  it('exitPool: Check that reserved balance is always respected', async () => {
+    /*
+      1. Enter pool
+      2. Exit 10% from pool
+      3. Add to the pool and see reserve increases
+      4. Make transferERC20 of 50% of pool
+      5. Confirm that user cannot instantly withdraw any of the pool
+      6. After completion of timeout, finalise withdrawal
+    */
+    await depositToPool(20)
+    await checkReservedBalance(16)
+    await exitPoolAndCheckCompletedInstantly(10)
+    await checkReservedBalance(16)
+    await depositToPool(10)
+    await checkReservedBalance(24)
+
+    // Transfer the funds out so the remaining pool is less than reserved
+    const stakeAmount = _1e18.mul(new BN(1000000))
+    await nectar.mint(accounts[0], stakeAmount)
+    await nectar.approve(registry.address, stakeAmount)
+    await registry.stakeNECCollateral(stakeAmount)
+    await registry.transferERC20(weth.address, accounts[8], _1e18.mul(new BN(10)), getRandomSalt())
+
+    const exitAmount = _1e18.mul(new BN(10))
+    pool.exitPool(exitAmount, { from: accounts[1] })
+    let pendingExit = await pool.exitRequests(accounts[1])
+    assert.equal(pendingExit.shares.toString(), exitAmount.toString(), 'Pending amount is not 10 shares')
+
+    await checkReservedBalance(24)
+    await moveForwardTime(86400 * 2) // days
+
+    await pool.finaliseExit(accounts[1], { from: accounts[1] })
+
+    pendingExit = await pool.exitRequests(accounts[1])
+    assert.equal(pendingExit.shares, 0, 'Pending amount is not zero')
+
+    const totalPoolUnderlyingSize = await pool.totalPoolSize()
+    await checkReservedBalance(totalPoolUnderlyingSize.mul(new BN(8)).div(new BN(10)))
   })
 
 })

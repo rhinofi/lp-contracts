@@ -27,9 +27,11 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
   // In future this fee can either be set via an equation related to the size of withdrawal and pool
   // Or via governance of LP token holders
-  uint256 sendAfterFee;
+  uint256 public sendAfterFee;
   // Ratio of insurance fund to pool funds
-  uint256 reserveRatio;
+  uint8 public reserveRatio;
+  // Percentage of funds that LP can instantly withdraw
+  uint8 public targetAvailabilityPercentage;
 
   modifier onlyPool() {
     require(isPool[msg.sender]);
@@ -46,6 +48,10 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     contractName = string(abi.encodePacked("DeversiFi_MasterTransferRegistry_v0.0.1"));
     sendAfterFee = 9990;
     reserveRatio = 2;
+    targetAvailabilityPercentage = 20;
+    require(sendAfterFee < 10000);
+    require(targetAvailabilityPercentage <= 100);
+    require(reserveRatio > 1);
   }
 
   function identify()
@@ -167,7 +173,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     return true;
   }
 
-  function createNewPool(address _newPoolToken) public {
+  function createNewPool(address _newPoolToken) external onlyOwner {
     require(tokenPools[_newPoolToken] == address(0));
     registerNewOracle(_newPoolToken);
     string memory symbol = ERC20(_newPoolToken).symbol();
@@ -180,5 +186,19 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     isPool[address(newPool)] = true;
     emit LogNewPoolCreated(_newPoolToken, address(newPool));
   }
+
+  function setTransferFee(uint256 newFee) external onlyOwner {
+    // Fee must be between 0 and 1%
+    require(newFee <= 10000);
+    require(newFee >= 9900);
+    sendAfterFee = newFee;
+  }
+
+  function setAvailabilityPercentage(uint8 newPercentage) external onlyOwner {
+    require(newPercentage <= 100);
+    targetAvailabilityPercentage = newPercentage;
+  }
+
+
 
 }
