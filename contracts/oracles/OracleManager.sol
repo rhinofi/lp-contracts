@@ -18,11 +18,11 @@ contract OracleManager is Initializable {
   uint public constant PERIOD = 24 hours;
 
   // token to WETH price
-  mapping (address => FixedPoint.uq112x112) public T2WPrice;
+  mapping (address => FixedPoint.uq112x112) internal T2WPrice;
   // WETH to token price
-  mapping (address => FixedPoint.uq112x112) public W2TPrice;
-  mapping (address => uint256) public price0CumulativeLastUpdate;
-  mapping (address => uint256) public price1CumulativeLastUpdate;
+  mapping (address => FixedPoint.uq112x112) internal W2TPrice;
+  mapping (address => uint256) internal price0CumulativeLastUpdate;
+  mapping (address => uint256) internal price1CumulativeLastUpdate;
   mapping (address => uint32) public blockTimestampLastUpdate;
 
   mapping (address => IUniswapV2Pair) public uniswapPairs;

@@ -14,8 +14,11 @@ contract WithdrawalPool is WithdrawalPoolToken  {
   address public poolToken;
   address public transferRegistry;
   uint256 public constant INITIAL_SUPPLY = 100 * 10 ** 18;
-  uint256 public constant MINIMUM_EXIT_PERIOD = 3 hours;
+  uint256 public constant MINIMUM_EXIT_PERIOD = 2 hours;
   uint256 public constant MAXIMUM_EXIT_PERIOD = 36 hours;
+
+  // The amount of underlying tokens that are not available to withdraw instantly
+  uint256 public reservedUnderlyingBalance;
 
   struct PendingExit {
     uint256 shares;
@@ -71,52 +74,103 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     emit LogJoinedPool(msg.sender, poolToken, amountUnderlying, newPoolShares);
     IERC20(poolToken).safeTransferFrom(msg.sender, address(this), amountUnderlying);
     _mint(msg.sender, newPoolShares);
+    increaseReservedBalance(amountUnderlying);
   }
 
   function exitPool(uint256 amountPoolShares) public {
-    _transfer(msg.sender, address(this), amountPoolShares);
-    emit LogPendingExit(msg.sender, poolToken, amountPoolShares);
-    exitRequests[msg.sender].shares = exitRequests[msg.sender].shares.add(amountPoolShares);
-    exitRequests[msg.sender].requestTime = now;
+    uint256 amountUnderlying = sharesToUnderlying(amountPoolShares);
+    if (amountUnderlying <= amountAvailableForInstantExit()) {
+      _burn(msg.sender, amountPoolShares);
+      processNormalExit(msg.sender, amountUnderlying, amountPoolShares);
+    } else {
+      _transfer(msg.sender, address(this), amountPoolShares);
+      emit LogPendingExit(msg.sender, poolToken, amountPoolShares);
+      exitRequests[msg.sender] = PendingExit({
+        shares: exitRequests[msg.sender].shares.add(amountPoolShares),
+        requestTime: now
+      });
+    }
   }
 
   function finaliseExit(address exiter) public returns (bool) {
     PendingExit memory pending = exitRequests[exiter];
-    uint256 totalPoolShares = totalSupply();
-    uint256 amountUnderlying = pending.shares.mul(totalPoolSize()).div(totalPoolShares);
+
+    uint256 amountUnderlying = sharesToUnderlying(pending.shares);
     if (now > pending.requestTime + MINIMUM_EXIT_PERIOD) {
-      if (totalPoolSize().sub(lentSupply()) >= amountUnderlying) {
-        IERC20(poolToken).safeTransfer(exiter, amountUnderlying);
+      if (amountUnderlying <= amountAvailableForInstantExit()) {
         _burn(address(this), pending.shares);
-        exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
-        emit LogExit(exiter, poolToken, amountUnderlying, pending.shares);
-        return true;
+        return processNormalExit(exiter, amountUnderlying, pending.shares);
+      } else if (amountUnderlying <= totalPoolSize().sub(lentSupply())) {
+        _burn(address(this), pending.shares);
+        resetReservedBalance(amountUnderlying);
+        return processNormalExit(exiter, amountUnderlying, pending.shares);
       }
     }
     if (now > pending.requestTime + MAXIMUM_EXIT_PERIOD) {
-      payFromInsuranceFund(exiter, amountUnderlying);
+      payFromInsuranceFund(exiter, amountUnderlying, pending.shares);
       _burn(address(this), pending.shares);
-      exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
-      emit LogInsuranceClaim(exiter, poolToken, amountUnderlying, pending.shares);
       return true;
     }
     return false;
   }
 
-  function payFromInsuranceFund(address toPay, uint256 amount) internal returns (bool) {
-    return MasterTransferRegistry(transferRegistry).payFromInsuranceFund(poolToken, toPay, amount);
+  function processNormalExit(address exiter, uint256 amount, uint256 shares) internal returns (bool) {
+    exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
+    IERC20(poolToken).safeTransfer(exiter, amount);
+    emit LogExit(exiter, poolToken, amount, shares);
+    return true;
   }
+
+
+  // INFORMATION - Pool
 
   function totalPoolSize() public view returns (uint256) {
     return IERC20(poolToken).balanceOf(address(this)) + lentSupply();
+  }
+
+  function underlyingTokensOwned(address owner) public view returns (uint256) {
+    return sharesToUnderlying(balanceOf(owner));
+  }
+
+  function sharesToUnderlying(uint256 amount) internal view returns (uint256) {
+    return amount.mul(totalPoolSize()).div(totalSupply());
+  }
+
+  function amountAvailableForInstantExit() public view returns (uint256) {
+    if (reservedUnderlyingBalance > totalPoolSize().sub(lentSupply())) {
+      return 0;
+    }
+    return totalPoolSize().sub(lentSupply()).sub(reservedUnderlyingBalance);
+  }
+
+  // MasterTransferRegistry - Functions calling to the registry
+
+  function payFromInsuranceFund(address exiter, uint256 amount, uint256 shares) internal returns (bool) {
+    exitRequests[exiter] = PendingExit({ shares: 0, requestTime: 0 });
+    emit LogInsuranceClaim(exiter, poolToken, amount, shares);
+    return MasterTransferRegistry(transferRegistry).payFromInsuranceFund(poolToken, exiter, amount);
   }
 
   function lentSupply() internal view returns (uint256) {
     return MasterTransferRegistry(transferRegistry).lentSupply(poolToken);
   }
 
-  function underlyingTokensOwned(address owner) public view returns (uint256) {
-    return totalPoolSize().mul(balanceOf(owner)).div(totalSupply());
+  function targetAvailabilityPercentage() internal view returns (uint8) {
+    return MasterTransferRegistry(transferRegistry).targetAvailabilityPercentage();
+  }
+
+  function targetReservedPercentage() internal view returns (uint8) {
+    return 100 - targetAvailabilityPercentage();
+  }
+
+  // RESERVED BALANCE - Internal functions for managing reserved balances
+
+  function increaseReservedBalance(uint256 amount) internal {
+    reservedUnderlyingBalance = reservedUnderlyingBalance.add(amount.mul(targetReservedPercentage()).div(100));
+  }
+
+  function resetReservedBalance(uint256 amount) internal {
+    reservedUnderlyingBalance = totalPoolSize().sub(amount).mul(targetReservedPercentage()).div(100);
   }
 
 }
