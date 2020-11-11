@@ -11,12 +11,12 @@ contract MockWETH is ERC20 {
 
   function deposit() public payable {
     _mint(msg.sender, msg.value);
-    Deposit(msg.sender, msg.value);
+    emit Deposit(msg.sender, msg.value);
   }
 
   function withdraw(uint wad) public {
     _burn(msg.sender, wad);
     msg.sender.transfer(wad);
-    Withdrawal(msg.sender, wad);
+    emit Withdrawal(msg.sender, wad);
   }
 }
