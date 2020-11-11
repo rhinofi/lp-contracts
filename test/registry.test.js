@@ -4,6 +4,7 @@ const { deployProxy} = require('@openzeppelin/truffle-upgrades')
 const WithdrawalPool = artifacts.require('./WithdrawalPool.sol')
 const MasterTransferRegistry = artifacts.require('./MasterTransferRegistry.sol')
 const MintableERC20 = artifacts.require('./MintableERC20.sol')
+const MockWETH = artifacts.require('./MockWETH.sol')
 
 const factoryJson = require('@uniswap/v2-core/build/UniswapV2Factory.json')
 const pairJson = require('@uniswap/v2-core/build/UniswapV2Pair.json')
@@ -23,7 +24,7 @@ contract('MasterTransferRegistry', (accounts) => {
   let uni, pool, weth, nectar, registry, factory
 
   beforeEach('redeploy contract', async function () {
-    weth = await MintableERC20.new('Wrapped_ETH', 'WETH')
+    weth = await MockWETH.new()
     nectar = await MintableERC20.new('Nectar', 'NEC')
 
     factory = await UniswapV2Factory.new(accounts[0], { from: accounts[0] })
@@ -32,7 +33,7 @@ contract('MasterTransferRegistry', (accounts) => {
     assertEventOfType(tx, 'PairCreated', 0)
     uni = await UniswapV2Pair.at(tx.logs[0].args.pair)
 
-    await weth.mint(accounts[0], _1e18.mul(new BN(100)))
+    await weth.deposit({ value: _1e18.mul(new BN(80)), from: accounts[0] })
     await nectar.mint(accounts[0], _1e18.mul(new BN(100000)))
     await weth.transfer(uni.address, _1e18.mul(new BN(40)))
     await nectar.transfer(uni.address, _1e18.mul(new BN(50000)))
@@ -40,11 +41,11 @@ contract('MasterTransferRegistry', (accounts) => {
 
     registry = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address])
     await registry.createNewPool(weth.address)
-    await weth.mint(accounts[1], _1e18.mul(new BN(5000)))
+    await weth.deposit({ value: _1e18.mul(new BN(80)), from: accounts[1] })
     const poolAddress = await registry.tokenPools(weth.address)
     pool = await WithdrawalPool.at(poolAddress)
 
-    const depositAmount = _1e18.mul(new BN(1000))
+    const depositAmount = _1e18.mul(new BN(80))
     await weth.approve(pool.address, depositAmount, { from: accounts[1] })
     await pool.joinPool(depositAmount, { from: accounts[1] })
 
@@ -65,12 +66,12 @@ contract('MasterTransferRegistry', (accounts) => {
   })
 
   it('transferERC20: cannot transfer more than deposited in the weth pool', async () => {
-    const transferAmount = _1e18.mul(new BN(1001))
+    const transferAmount = _1e18.mul(new BN(81))
     await catchRevert(registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt()))
   })
 
   it('transferERC20: cannot transfer if no NEC staked', async () => {
-    const transferAmount = _1e18.mul(new BN(500))
+    const transferAmount = _1e18.mul(new BN(40))
     await catchRevert(registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt()))
   })
 
@@ -99,6 +100,24 @@ contract('MasterTransferRegistry', (accounts) => {
 
     const transferAmount = _1e18.mul(new BN(1005))
     await catchRevert(registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt()))
+  })
+
+  it.only('transferEth: can transfer Eth using Weth pool if NEC staked and below available limit', async () => {
+    const stakeAmount = _1e18.mul(new BN(1000000))
+    await nectar.mint(accounts[0], stakeAmount)
+    await nectar.approve(registry.address, stakeAmount)
+    await registry.stakeNECCollateral(stakeAmount)
+
+    const balanceStart = await weth.balanceOf(pool.address)
+
+    const transferAmount = _1e18.mul(new BN(5))
+    const transferAmountAfterFee = transferAmount.mul(new BN(999)).div(new BN(1000))
+    await registry.transferETH(accounts[5], transferAmount, getRandomSalt())
+
+    const balanceAfter = await weth.balanceOf(pool.address)
+
+    assert.equal(true, false, 'throw')
+    assert.equal(balanceStart.toString(), balanceAfter.add(transferAmountAfterFee).toString(), 'Amount not transfered')
   })
 
   it('repay: can repay weth from pool to set lentSupply back to zero', async () => {

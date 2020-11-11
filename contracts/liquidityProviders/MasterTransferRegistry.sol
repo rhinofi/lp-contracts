@@ -94,6 +94,8 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       address newPool
   );
 
+  receive() external payable {}
+
   /*
     Transfer the specified amount of erc20 tokens from msg.sender balance to the recipient's
     balance.
@@ -113,7 +115,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       IERC20(erc20).safeTransferFrom(tokenPools[erc20], recipient, calculateAmountMinusFee(amount));
   }
 
-  function transferETH(address recipient, uint256 amount, uint256 salt)
+  function transferETH(address payable recipient, uint256 amount, uint256 salt)
       external onlyOwner {
       bytes32 transferFact = keccak256(
           abi.encodePacked(recipient, amount, address(0), salt));
@@ -123,8 +125,8 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       recordBorrowingFromPool(WETH, amount);
       uint256 adjustedAmount = calculateAmountMinusFee(amount);
       IERC20(WETH).safeTransferFrom(tokenPools[WETH], address(this), adjustedAmount);
-      IWETH(WETH).deposit.value(adjustedAmount)();
-      IERC20(WETH).safeTransfer(recipient, adjustedAmount);
+      IWETH(WETH).withdraw(adjustedAmount);
+      recipient.transfer(adjustedAmount);
   }
 
   function calculateAmountMinusFee(uint256 amount) internal view returns (uint256) {

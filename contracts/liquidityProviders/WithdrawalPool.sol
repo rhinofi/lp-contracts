@@ -12,7 +12,7 @@ contract WithdrawalPool is WithdrawalPoolToken  {
   using SafeMath for uint256;
 
   address public poolToken;
-  address public transferRegistry;
+  address payable public transferRegistry;
   uint256 public constant INITIAL_SUPPLY = 100 * 10 ** 18;
   uint256 public constant MINIMUM_EXIT_PERIOD = 2 hours;
   uint256 public constant MAXIMUM_EXIT_PERIOD = 36 hours;

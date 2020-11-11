@@ -68,5 +68,10 @@ DeversiFi stakes NEC (the governance token of DeversiFi) as an insurance collate
   - A more elegant solution to exits should be implemented if possible, however one mitigation to this is that *anyone* may call the finalise function to exit LP funds, not only the LP (meaning DeversiFi could call it if they were aware of someone attempting this). However this has a gas cost associated with it.
 3. General gas optimisation and simplification where possible.
 4. More complete test coverage (including upgrade testing for MasterTransferRegistry)
-5. Remo at StarkWare to review
-6. Audit to be completed by independent 3rd party
+
+
+### Testing
+
+`ganache-cli -e 10000`
+
+`yarn test`
