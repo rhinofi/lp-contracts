@@ -12,7 +12,7 @@ contract OracleManager is Initializable {
   using FixedPoint for *;
 
   address public uniswapFactory;
-  address WETH;
+  address public WETH;
   address NEC;
 
   uint public constant PERIOD = 24 hours;

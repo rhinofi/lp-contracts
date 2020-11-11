@@ -202,7 +202,7 @@ contract('WithdrawalPool', (accounts) => {
     await nectar.mint(accounts[0], stakeAmount)
     await nectar.approve(registry.address, stakeAmount)
     await registry.stakeNECCollateral(stakeAmount)
-    await registry.transferERC20(weth.address, accounts[8], depositAmount, getRandomSalt())
+    await registry.transferForDeversifiWithdrawals(weth.address, accounts[8], depositAmount, getRandomSalt())
 
     await moveForwardTime(86400 * 2) // days
 
@@ -223,7 +223,7 @@ contract('WithdrawalPool', (accounts) => {
       1. Enter pool
       2. Exit 10% from pool
       3. Add to the pool and see reserve increases
-      4. Make transferERC20 of 50% of pool
+      4. Make transferForDeversifiWithdrawals of 50% of pool
       5. Confirm that user cannot instantly withdraw any of the pool
       6. After completion of timeout, finalise withdrawal
     */
@@ -239,7 +239,7 @@ contract('WithdrawalPool', (accounts) => {
     await nectar.mint(accounts[0], stakeAmount)
     await nectar.approve(registry.address, stakeAmount)
     await registry.stakeNECCollateral(stakeAmount)
-    await registry.transferERC20(weth.address, accounts[8], _1e18.mul(new BN(10)), getRandomSalt())
+    await registry.transferForDeversifiWithdrawals(weth.address, accounts[8], _1e18.mul(new BN(10)), getRandomSalt())
 
     const exitAmount = _1e18.mul(new BN(10))
     pool.exitPool(exitAmount, { from: accounts[1] })

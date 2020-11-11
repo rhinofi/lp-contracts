@@ -10,7 +10,6 @@ import "../starkEx/FactRegistry.sol";
 import "../starkEx/Identity.sol";
 import "./WithdrawalPool.sol";
 import "../oracles/OracleManager.sol";
-import "../tokens/IWETH.sol";
 
 contract MasterTransferRegistry is Initializable, FactRegistry, Identity, OracleManager, OwnableUpgradeSafe  {
   using SafeERC20 for IERC20;
@@ -95,36 +94,25 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   );
 
   /*
-    Transfer the specified amount of erc20 tokens from msg.sender balance to the recipient's
-    balance.
-    Pre-conditions to successful transfer are that the msg.sender has sufficient balance,
-    and the the approval (for the transfer) was granted to this contract.
+    Transfers funds from the pool to the withdrawer from DeversiFi
     A fact with the transfer details is registered upon success.
     Reverts if the fact has already been registered.
   */
-  function transferERC20(address erc20, address recipient, uint256 amount, uint256 salt)
+  function transferForDeversifiWithdrawals(address erc20, address recipient, uint256 amount, uint256 salt)
       external onlyOwner {
       bytes32 transferFact = keccak256(
           abi.encodePacked(recipient, amount, erc20, salt));
       require(!_factCheck(transferFact), "TRANSFER_ALREADY_REGISTERED");
       registerFact(transferFact);
       emit LogRegisteredTransfer(recipient, erc20, amount, salt);
-      recordBorrowingFromPool(erc20, amount);
-      IERC20(erc20).safeTransferFrom(tokenPools[erc20], recipient, calculateAmountMinusFee(amount));
-  }
 
-  function transferETH(address recipient, uint256 amount, uint256 salt)
-      external onlyOwner {
-      bytes32 transferFact = keccak256(
-          abi.encodePacked(recipient, amount, address(0), salt));
-      require(!_factCheck(transferFact), "TRANSFER_ALREADY_REGISTERED");
-      registerFact(transferFact);
-      emit LogRegisteredTransfer(recipient, address(0), amount, salt);
-      recordBorrowingFromPool(WETH, amount);
-      uint256 adjustedAmount = calculateAmountMinusFee(amount);
-      IERC20(WETH).safeTransferFrom(tokenPools[WETH], address(this), adjustedAmount);
-      IWETH(WETH).deposit.value(adjustedAmount)();
-      IERC20(WETH).safeTransfer(recipient, adjustedAmount);
+      if (erc20 == address(0)) {
+        recordBorrowingFromPool(WETH, amount);
+        WithdrawalPool(payable(tokenPools[WETH])).makeTransferETH(payable(recipient), calculateAmountMinusFee(amount));
+      } else {
+        recordBorrowingFromPool(erc20, amount);
+        WithdrawalPool(payable(tokenPools[erc20])).makeTransfer(recipient, calculateAmountMinusFee(amount));
+      }
   }
 
   function calculateAmountMinusFee(uint256 amount) internal view returns (uint256) {
