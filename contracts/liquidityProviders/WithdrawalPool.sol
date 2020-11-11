@@ -36,8 +36,9 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
 
   constructor (
     string memory _symbol,
-    address _poolToken
-  ) public WithdrawalPoolToken(_symbol, _symbol) {
+    address _poolToken,
+    address _aaveLendingPoolRegistry
+  ) public WithdrawalPoolToken(_symbol, _symbol) AaveManager(_aaveLendingPoolRegistry, _poolToken) {
     poolToken = _poolToken;
     transferRegistry = msg.sender;
     IERC20(poolToken).approve(transferRegistry, 2 ** 256 - 1);
@@ -145,7 +146,7 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   // INFORMATION - Pool
 
   function totalPoolSize() public view returns (uint256) {
-    return IERC20(poolToken).balanceOf(address(this)) + lentSupply();
+    return IERC20(poolToken).balanceOf(address(this)) + lentSupply() + inAaveSupply();
   }
 
   function underlyingTokensOwned(address owner) public view returns (uint256) {

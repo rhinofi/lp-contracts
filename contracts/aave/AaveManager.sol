@@ -28,27 +28,22 @@ contract AaveManager {
     function depositToAave(uint256 _amount) internal returns (bool) {
       ILendingPool lendingPool = ILendingPool(provider.getLendingPool());
       token.safeApprove(address(lendingPool), _amount);
-      ILendingPool(lendingPool).deposit(address(token), _amount, AAVE_REFERRAL_CODE);
+      lendingPool.deposit(address(token), _amount, address(this), AAVE_REFERRAL_CODE);
     }
 
     function withdrawFromAave(uint256 _amount) internal returns (bool) {
-      address lendingPool = ILendingPoolAddressesProvider(AAVE_LENDING_POOL_ADDRESSES).getLendingPool();
-
-      // Initialize aToken
-      (, , , , , , , , , , , address aTokenAddress, ) = lendingPool.getReserveData(address(token));
-      IAToken aToken = IAToken(aTokenAddress);
-
-      aToken.redeem(_amount);
+      ILendingPool lendingPool = ILendingPool(provider.getLendingPool());
+      lendingPool.withdraw(address(token), _amount, address(this));
     }
 
-    function depositedAaveSupply() public view returns (uint256) {
-      address lendingPool = ILendingPoolAddressesProvider(AAVE_LENDING_POOL_ADDRESSES).getLendingPool();
+    function inAaveSupply() public view returns (uint256) {
+      ILendingPool lendingPool = ILendingPool(provider.getLendingPool());
 
       // Initialize aToken
-      (, , , , , , , , , , , address aTokenAddress, ) = lendingPool.getReserveData(address(token));
+      ( , , , , , , address aTokenAddress, , , , ) = lendingPool.getReserveData(address(token));
       IAToken aToken = IAToken(aTokenAddress);
 
-      return aToken.principalBalanceOf(address(this));
+      return aToken.scaledBalanceOf(address(this));
     }
 
 }
