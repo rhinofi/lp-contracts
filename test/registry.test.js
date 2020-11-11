@@ -33,25 +33,25 @@ contract('MasterTransferRegistry', (accounts) => {
     assertEventOfType(tx, 'PairCreated', 0)
     uni = await UniswapV2Pair.at(tx.logs[0].args.pair)
 
-    await weth.deposit({ value: _1e18.mul(new BN(80)), from: accounts[0] })
-    await nectar.mint(accounts[0], _1e18.mul(new BN(100000)))
-    await weth.transfer(uni.address, _1e18.mul(new BN(40)))
-    await nectar.transfer(uni.address, _1e18.mul(new BN(50000)))
+    await weth.deposit({ value: _1e18.mul(new BN(8)), from: accounts[0] })
+    await nectar.mint(accounts[0], _1e18.mul(new BN(10000)))
+    await weth.transfer(uni.address, _1e18.mul(new BN(4)))
+    await nectar.transfer(uni.address, _1e18.mul(new BN(5000)))
     await uni.mint(accounts[0], { from: accounts[0] })
 
     registry = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address])
     await registry.createNewPool(weth.address)
-    await weth.deposit({ value: _1e18.mul(new BN(80)), from: accounts[1] })
+    await weth.deposit({ value: _1e18.mul(new BN(8)), from: accounts[1] })
     const poolAddress = await registry.tokenPools(weth.address)
     pool = await WithdrawalPool.at(poolAddress)
 
-    const depositAmount = _1e18.mul(new BN(80))
+    const depositAmount = _1e18.mul(new BN(8))
     await weth.approve(pool.address, depositAmount, { from: accounts[1] })
     await pool.joinPool(depositAmount, { from: accounts[1] })
 
     await moveForwardTime(86400)
-    await weth.transfer(uni.address, _1e18.mul(new BN(4)))
-    await nectar.transfer(uni.address, _1e18.mul(new BN(5000)))
+    await weth.transfer(uni.address, _1e18.div(new BN(10)).mul(new BN(4)))
+    await nectar.transfer(uni.address, _1e18.mul(new BN(500)))
     await uni.mint(accounts[0], { from: accounts[0] })
 
     await registry.updateExchangeRate(nectar.address)
@@ -65,72 +65,75 @@ contract('MasterTransferRegistry', (accounts) => {
     assert.equal(name, 'DeversiFi_MasterTransferRegistry_v0.0.1', 'Name not set')
   })
 
-  it('transferERC20: cannot transfer more than deposited in the weth pool', async () => {
-    const transferAmount = _1e18.mul(new BN(81))
-    await catchRevert(registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt()))
+  it('transferForDeversifiWithdrawals: cannot transfer more than deposited in the weth pool', async () => {
+    const transferAmount = _1e18.mul(new BN(9))
+    await catchRevert(registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt()))
   })
 
-  it('transferERC20: cannot transfer if no NEC staked', async () => {
-    const transferAmount = _1e18.mul(new BN(40))
-    await catchRevert(registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt()))
+  it('transferForDeversifiWithdrawals: cannot transfer if no NEC staked', async () => {
+    const transferAmount = _1e18.mul(new BN(4))
+    await catchRevert(registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt()))
   })
 
-  it('transferERC20: can transfer weth from pool if NEC staked and below available limit', async () => {
-    const stakeAmount = _1e18.mul(new BN(1000000))
+  it('transferForDeversifiWithdrawals: can transfer weth from pool if NEC staked and below available limit', async () => {
+    const stakeAmount = _1e18.mul(new BN(100000))
     await nectar.mint(accounts[0], stakeAmount)
     await nectar.approve(registry.address, stakeAmount)
     await registry.stakeNECCollateral(stakeAmount)
 
     const balanceStart = await weth.balanceOf(pool.address)
 
-    const transferAmount = _1e18.mul(new BN(5))
+    const transferAmount = _1e18.div(new BN(10)).mul(new BN(5))
     const transferAmountAfterFee = transferAmount.mul(new BN(999)).div(new BN(1000))
-    await registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt())
+    await registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt())
 
     const balanceAfter = await weth.balanceOf(pool.address)
 
     assert.equal(balanceStart.toString(), balanceAfter.add(transferAmountAfterFee).toString(), 'Amount not transfered')
   })
 
-  it('transferERC20: cannot transfer more weth than is available in pool', async () => {
-    const stakeAmount = _1e18.mul(new BN(10000000000000))
+  it('transferForDeversifiWithdrawals: cannot transfer more weth than is available in pool', async () => {
+    const stakeAmount = _1e18.mul(new BN(1000000000000))
     await nectar.mint(accounts[0], stakeAmount)
     await nectar.approve(registry.address, stakeAmount)
     await registry.stakeNECCollateral(stakeAmount)
 
-    const transferAmount = _1e18.mul(new BN(1005))
-    await catchRevert(registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt()))
+    const transferAmount = _1e18.mul(new BN(20))
+    await catchRevert(registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt()))
   })
 
-  it.only('transferEth: can transfer Eth using Weth pool if NEC staked and below available limit', async () => {
-    const stakeAmount = _1e18.mul(new BN(1000000))
+  it('transferForDeversifiWithdrawals: can transfer Eth using Weth pool if NEC staked and below available limit', async () => {
+    const stakeAmount = _1e18.mul(new BN(100000))
     await nectar.mint(accounts[0], stakeAmount)
     await nectar.approve(registry.address, stakeAmount)
     await registry.stakeNECCollateral(stakeAmount)
 
     const balanceStart = await weth.balanceOf(pool.address)
+    const ethBalanceStart = await web3.eth.getBalance(accounts[5])
 
-    const transferAmount = _1e18.mul(new BN(5))
+    const transferAmount = _1e18.div(new BN(10)).mul(new BN(5))
     const transferAmountAfterFee = transferAmount.mul(new BN(999)).div(new BN(1000))
-    await registry.transferETH(accounts[5], transferAmount, getRandomSalt())
+    await registry.transferForDeversifiWithdrawals('0x0000000000000000000000000000000000000000', accounts[5], transferAmount, getRandomSalt())
 
     const balanceAfter = await weth.balanceOf(pool.address)
+    const ethBalanceAfter = await web3.eth.getBalance(accounts[5])
 
-    assert.equal(true, false, 'throw')
     assert.equal(balanceStart.toString(), balanceAfter.add(transferAmountAfterFee).toString(), 'Amount not transfered')
+
+    assert.equal((new BN(ethBalanceStart)).add(transferAmountAfterFee).toString(), ethBalanceAfter.toString(), 'Amount not transfered')
   })
 
   it('repay: can repay weth from pool to set lentSupply back to zero', async () => {
-    const stakeAmount = _1e18.mul(new BN(1000000))
+    const stakeAmount = _1e18.mul(new BN(100000))
     await nectar.mint(accounts[0], stakeAmount)
     await nectar.approve(registry.address, stakeAmount)
     await registry.stakeNECCollateral(stakeAmount)
 
     const balanceStart = await weth.balanceOf(pool.address)
 
-    const transferAmount = _1e18.mul(new BN(5))
+    const transferAmount = _1e18.div(new BN(10)).mul(new BN(5))
     const transferAmountAfterFee = transferAmount.mul(new BN(999)).div(new BN(1000))
-    await registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt())
+    await registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt())
 
     const balanceAfter = await weth.balanceOf(pool.address)
 
@@ -145,13 +148,13 @@ contract('MasterTransferRegistry', (accounts) => {
   })
 
   it('unstakeNECCollateral: cannot unstake NEC used to insure lent funds', async () => {
-    const stakeAmount = _1e18.mul(new BN(1000000))
+    const stakeAmount = _1e18.mul(new BN(100000))
     await nectar.mint(accounts[0], stakeAmount)
     await nectar.approve(registry.address, stakeAmount)
     await registry.stakeNECCollateral(stakeAmount)
 
-    const transferAmount = _1e18.mul(new BN(5))
-    await registry.transferERC20(weth.address, accounts[5], transferAmount, getRandomSalt())
+    const transferAmount = _1e18.div(new BN(10)).mul(new BN(5))
+    await registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt())
 
     assert.equal((await registry.lentSupply(weth.address)).toString(), transferAmount.toString(), 'Lent amount not recorded correctly')
 

@@ -6,13 +6,14 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "./WithdrawalPoolToken.sol";
 import "./MasterTransferRegistry.sol";
+import "../tokens/IWETH.sol";
 
 contract WithdrawalPool is WithdrawalPoolToken  {
   using SafeERC20 for IERC20;
   using SafeMath for uint256;
 
   address public poolToken;
-  address payable public transferRegistry;
+  address public transferRegistry;
   uint256 public constant INITIAL_SUPPLY = 100 * 10 ** 18;
   uint256 public constant MINIMUM_EXIT_PERIOD = 2 hours;
   uint256 public constant MAXIMUM_EXIT_PERIOD = 36 hours;
@@ -27,6 +28,11 @@ contract WithdrawalPool is WithdrawalPoolToken  {
 
   mapping (address => PendingExit) public exitRequests;
 
+  modifier onlyRegistry() {
+    require(msg.sender == transferRegistry);
+    _;
+  }
+
   constructor (
     string memory _symbol,
     address _poolToken
@@ -35,6 +41,8 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     transferRegistry = msg.sender;
     IERC20(poolToken).approve(transferRegistry, 2 ** 256 - 1);
   }
+
+  receive() external payable {}
 
   event LogJoinedPool(
       address joiner,
@@ -119,6 +127,17 @@ contract WithdrawalPool is WithdrawalPoolToken  {
     IERC20(poolToken).safeTransfer(exiter, amount);
     emit LogExit(exiter, poolToken, amount, shares);
     return true;
+  }
+
+  function makeTransfer(address recipient, uint256 amount) public onlyRegistry {
+    IERC20(poolToken).safeTransfer(recipient, amount);
+  }
+
+  function makeTransferETH(address payable recipient, uint256 amount) public onlyRegistry {
+    address WETH = MasterTransferRegistry(transferRegistry).WETH();
+    assert(poolToken == WETH);
+    IWETH(WETH).withdraw(amount);
+    recipient.transfer(amount);
   }
 
 
