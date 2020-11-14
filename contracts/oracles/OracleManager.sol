@@ -66,16 +66,15 @@ contract OracleManager is Initializable {
 
   // For a specified token and amount
   // Returns the equivalent value as a quantity of NEC
-  // Returns the rate of NEC vs a specified token (token / nec) i.e. 0.3 weth / nec
-  function necExchangeRate(address token, uint256 amount) public view returns (uint256 price) {
+  function necExchangeRate(address token, uint256 amountInToken) public view returns (uint256 amountInNEC) {
     if (token == NEC) {
-      price = amount;
+      amountInNEC = amountInToken;
     } else if (token == WETH) {
-      price = W2TPrice[NEC].mul(amount).decode144();
+      amountInNEC = W2TPrice[NEC].mul(amountInToken).decode144();
     } else {
-      price = T2WPrice[token].mul(amount).decode144() * W2TPrice[NEC].decode();
+      amountInNEC = T2WPrice[token].mul(amountInToken).decode144() * W2TPrice[NEC].decode();
     }
-    require(price != 0, 'OracleManager: PRICE_ZERO');
+    require(amountInNEC != 0, 'OracleManager: PRICE_ZERO');
   }
 
   function registerNewOracle(address token) public returns (bool) {

@@ -170,7 +170,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     registerNewOracle(_newPoolToken);
     string memory symbol = ERC20(_newPoolToken).symbol();
     WithdrawalPool newPool  = new WithdrawalPool(
-      string(abi.encodePacked('DVF-LP-token-', symbol)),
+      string(abi.encodePacked('DVF-LP-', symbol)),
       _newPoolToken,
       aaveLendingPoolRegistry
       );
@@ -180,20 +180,22 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     emit LogNewPoolCreated(_newPoolToken, address(newPool));
   }
 
-  function setTransferFee(uint256 newFee) external onlyOwner {
+  function setTransferFee(uint256 _newFee) external onlyOwner {
     // Fee must be between 0 and 1%
-    require(newFee <= 10000, "Registry: POOL_TRANSFER_FEE_MINIMUM_0%");
-    require(newFee >= 9900, "Registry: POOL_TRANSFER_FEE_MAXIMUM_1%");
-    sendAfterFee = newFee;
+    require(_newFee <= 10000, "Registry: POOL_TRANSFER_FEE_MINIMUM_0%");
+    require(_newFee >= 9900, "Registry: POOL_TRANSFER_FEE_MAXIMUM_1%");
+    sendAfterFee = _newFee;
   }
 
-  function setAvailabilityPercentage(uint8 newPercentage) external onlyOwner {
-    require(newPercentage <= 100, "Registry: POOL_AVAILABILITY_MAXIMUM_100%");
-    targetAvailabilityPercentage = newPercentage;
+  function setAvailabilityPercentage(uint8 _newPercentage) external onlyOwner {
+    require(_newPercentage <= 100, "Registry: POOL_AVAILABILITY_MAXIMUM_100%");
+    targetAvailabilityPercentage = _newPercentage;
   }
 
-  function setAaveIsActive(address poolAddress, bool isActive) external onlyOwner {
-    isAaveActive[poolAddress] = isActive;
+  function setAaveIsActive(address _tokenAddress, bool _isActive) external onlyOwner {
+    address poolAddress = tokenPools[_tokenAddress];
+    require(poolAddress != address(0), "Registry: POOL_MUST_EXIST");
+    isAaveActive[poolAddress] = _isActive;
     if (isAaveActive[poolAddress] == false) {
       WithdrawalPool(payable(poolAddress)).withdrawAllFromAave();
     }

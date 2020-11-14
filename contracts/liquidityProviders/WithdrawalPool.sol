@@ -217,7 +217,7 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
 
   function withdrawFromAaveIfRequired(uint256 amount) internal {
     if (!isAaveActive()) return;
-    if (amountAvailableForInstantExit() > amount) return;
+    if (IERC20(poolToken).balanceOf(address(this)) >= amount) return;
 
     resetReservedBalance(amount);
   }
