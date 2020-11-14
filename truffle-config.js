@@ -58,9 +58,9 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     // ropsten: {
-    rinkeby: {
-      provider: () => new HDWalletProvider(privateKey, `wss://rinkeby.infura.io/ws/v3/${infuraKey}`),
-      network_id: 4, // Rinkeby's id
+    kovan: {
+      provider: () => new HDWalletProvider(privateKey, `wss://kovan.infura.io/ws/v3/${infuraKey}`),
+      network_id: 42, // Rinkeby's id
       gas: 5500000, // Rinkeby limit
       confirmations: 1, // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)

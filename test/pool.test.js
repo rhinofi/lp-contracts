@@ -37,7 +37,7 @@ contract('WithdrawalPool', (accounts) => {
     await nectar.transfer(uni.address, _1e18.mul(new BN(50000)))
     await uni.mint(accounts[0], { from: accounts[0] })
 
-    registry = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address])
+    registry = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address, accounts[9]])
     await registry.createNewPool(weth.address)
     await weth.mint(accounts[1], _1e18.mul(new BN(5000)))
     const poolAddress = await registry.tokenPools(weth.address)

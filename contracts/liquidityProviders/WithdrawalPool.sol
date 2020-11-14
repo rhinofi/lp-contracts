@@ -15,7 +15,7 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
 
   address public poolToken;
   address public transferRegistry;
-  uint256 public constant INITIAL_SUPPLY = 100 * 10 ** 18;
+  uint256 constant INITIAL_SUPPLY = 100 * 10 ** 18;
   uint256 public constant MINIMUM_EXIT_PERIOD = 2 hours;
   uint256 public constant MAXIMUM_EXIT_PERIOD = 36 hours;
 
@@ -41,7 +41,6 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   ) public WithdrawalPoolToken(_symbol, _symbol) AaveManager(_aaveLendingPoolRegistry, _poolToken) {
     poolToken = _poolToken;
     transferRegistry = msg.sender;
-    IERC20(poolToken).approve(transferRegistry, 2 ** 256 - 1);
   }
 
   receive() external payable {}
@@ -132,12 +131,14 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   }
 
   function makeTransfer(address recipient, uint256 amount) public onlyRegistry {
+    withdrawFromAaveIfRequired(amount);
     IERC20(poolToken).safeTransfer(recipient, amount);
   }
 
   function makeTransferETH(address payable recipient, uint256 amount) public onlyRegistry {
     address WETH = MasterTransferRegistry(transferRegistry).WETH();
     assert(poolToken == WETH);
+    withdrawFromAaveIfRequired(amount);
     IWETH(WETH).withdraw(amount);
     recipient.transfer(amount);
   }
@@ -146,7 +147,10 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   // INFORMATION - Pool
 
   function totalPoolSize() public view returns (uint256) {
-    return IERC20(poolToken).balanceOf(address(this)) + lentSupply() + inAaveSupply();
+    if (isAaveActive()) {
+      return IERC20(poolToken).balanceOf(address(this)) + lentSupply() + inAaveSupply();
+    }
+    return IERC20(poolToken).balanceOf(address(this)) + lentSupply();
   }
 
   function underlyingTokensOwned(address owner) public view returns (uint256) {
@@ -191,16 +195,31 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   // RESERVED BALANCE - Internal functions for managing reserved balances
 
   function increaseReservedBalance(uint256 amount) internal {
-    reservedUnderlyingBalance = reservedUnderlyingBalance.add(amount.mul(targetReservedPercentage()).div(100));
+    uint256 amountToReserve = amount.mul(targetReservedPercentage()).div(100);
+    reservedUnderlyingBalance = reservedUnderlyingBalance.add(amountToReserve);
     if (isAaveActive()) {
-      // Deposit to aave
+      depositToAave(amountToReserve);
     }
   }
 
   function resetReservedBalance(uint256 amount) internal {
     reservedUnderlyingBalance = totalPoolSize().sub(amount).mul(targetReservedPercentage()).div(100);
     if (isAaveActive()) {
-      // Withdraw from aave
+      uint256 amountToWithdraw = inAaveSupply().sub(reservedUnderlyingBalance);
+      withdrawFromAave(amountToWithdraw);
+    }
+  }
+
+  function withdrawFromAaveIfRequired(uint256 amount) internal {
+    if (!isAaveActive()) return;
+    if (amountAvailableForInstantExit() > amount) return;
+
+    resetReservedBalance(amount);
+  }
+
+  function withdrawAllFromAave() public onlyRegistry {
+    if(inAaveSupply() > 0) {
+      withdrawFromAave(uint256(-1));
     }
   }
 

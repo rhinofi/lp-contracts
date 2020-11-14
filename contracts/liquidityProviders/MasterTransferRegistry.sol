@@ -16,6 +16,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   using SafeMath for uint256;
 
   string contractName;
+  address aaveLendingPoolRegistry;
 
   mapping (address => address) public tokenPools;
   mapping (address => bool) internal isPool;
@@ -41,11 +42,13 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   function initialize(
     address _uniswapFactory,
     address _WETH,
-    address _NEC
+    address _NEC,
+    address _aaveLendingPoolRegistry
   ) public initializer {
     __OracleManager_init(_uniswapFactory, _WETH, _NEC);
     __Ownable_init();
     contractName = string(abi.encodePacked("DeversiFi_MasterTransferRegistry_v0.0.1"));
+    aaveLendingPoolRegistry = _aaveLendingPoolRegistry;
     sendAfterFee = 9990;
     reserveRatio = 2;
     targetAvailabilityPercentage = 20;
@@ -167,8 +170,9 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     registerNewOracle(_newPoolToken);
     string memory symbol = ERC20(_newPoolToken).symbol();
     WithdrawalPool newPool  = new WithdrawalPool(
-      symbol,
-      _newPoolToken
+      string(abi.encodePacked('DVF-LP-token-', symbol)),
+      _newPoolToken,
+      aaveLendingPoolRegistry
       );
 
     tokenPools[_newPoolToken] = address(newPool);
@@ -190,6 +194,9 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
   function setAaveIsActive(address poolAddress, bool isActive) external onlyOwner {
     isAaveActive[poolAddress] = isActive;
+    if (isAaveActive[poolAddress] == false) {
+      WithdrawalPool(payable(poolAddress)).withdrawAllFromAave();
+    }
   }
 
 }

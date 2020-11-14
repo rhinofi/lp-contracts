@@ -36,7 +36,7 @@ contract('OracleManager', (accounts) => {
     await nectar.transfer(pool.address, _1e18.mul(new BN(50000)))
     await pool.mint(accounts[0], { from: accounts[0] })
 
-    oracle = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address])
+    oracle = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address, accounts[9]])
   })
 
   it('deploy: oracle manager and uniswap pair get deployed', async () => {
