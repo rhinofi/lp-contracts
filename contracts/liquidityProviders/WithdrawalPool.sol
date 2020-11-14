@@ -30,7 +30,7 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   mapping (address => PendingExit) public exitRequests;
 
   modifier onlyRegistry() {
-    require(msg.sender == transferRegistry);
+    require(msg.sender == transferRegistry, "Pool: CALLER_MUST_BE_REGISTRY");
     _;
   }
 
@@ -130,12 +130,12 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
     return true;
   }
 
-  function makeTransfer(address recipient, uint256 amount) public onlyRegistry {
+  function makeTemporaryLoan(address recipient, uint256 amount) public onlyRegistry {
     withdrawFromAaveIfRequired(amount);
     IERC20(poolToken).safeTransfer(recipient, amount);
   }
 
-  function makeTransferETH(address payable recipient, uint256 amount) public onlyRegistry {
+  function makeTemporaryLoanETH(address payable recipient, uint256 amount) public onlyRegistry {
     address WETH = MasterTransferRegistry(transferRegistry).WETH();
     assert(poolToken == WETH);
     withdrawFromAaveIfRequired(amount);
@@ -205,8 +205,13 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
   function resetReservedBalance(uint256 amount) internal {
     reservedUnderlyingBalance = totalPoolSize().sub(amount).mul(targetReservedPercentage()).div(100);
     if (isAaveActive()) {
-      uint256 amountToWithdraw = inAaveSupply().sub(reservedUnderlyingBalance);
-      withdrawFromAave(amountToWithdraw);
+      if (inAaveSupply() > reservedUnderlyingBalance) {
+        uint256 amountToWithdraw = inAaveSupply().sub(reservedUnderlyingBalance);
+        withdrawFromAave(amountToWithdraw);
+      } else {
+        uint256 amountToDeposit = reservedUnderlyingBalance.sub(inAaveSupply());
+        depositToAave(amountToDeposit);
+      }
     }
   }
 

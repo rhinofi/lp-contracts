@@ -35,8 +35,8 @@ contract OracleManager is Initializable {
   }
 
   function updateExchangeRate(address token) external returns (bool) {
-    require(token != WETH);
-    require(address(uniswapPairs[token]) != address(0));
+    require(token != WETH, 'OracleManager: WETH_RATE_UPDATE_NOT_REQUIRED');
+    require(address(uniswapPairs[token]) != address(0), 'OracleManager: TOKEN_NOT_ON_UNISWAP');
 
     IUniswapV2Pair pair = uniswapPairs[token];
     (uint price0Cumulative, uint price1Cumulative, uint32 blockTimestamp) =
@@ -44,7 +44,7 @@ contract OracleManager is Initializable {
     uint32 timeElapsed = blockTimestamp - blockTimestampLastUpdate[token]; // overflow is desired
 
     // ensure that at least one full period has passed since the last update
-    require(timeElapsed >= PERIOD, 'ExampleOracleSimple: PERIOD_NOT_ELAPSED');
+    require(timeElapsed >= PERIOD, 'OracleManager: PERIOD_NOT_ELAPSED');
 
     // overflow is desired, casting never truncates
     // cumulative price is in (uq112x112 price * seconds) units so we simply wrap it after division by time elapsed
@@ -75,7 +75,7 @@ contract OracleManager is Initializable {
     } else {
       price = T2WPrice[token].mul(amount).decode144() * W2TPrice[NEC].decode();
     }
-    require(price != 0);
+    require(price != 0, 'OracleManager: PRICE_ZERO');
   }
 
   function registerNewOracle(address token) public returns (bool) {
@@ -86,8 +86,10 @@ contract OracleManager is Initializable {
     }
     IUniswapV2Pair _pair = IUniswapV2Pair(UniswapV2Library.pairFor(uniswapFactory, token, WETH));
     (uint reserve0, uint reserve1, uint32 blockTimestampLast) = _pair.getReserves();
+    require(reserve0 != 0 && reserve1 != 0, 'OracleManager: NO_RESERVES'); // ensure that there's liquidity in the pair
+    price0CumulativeLastUpdate[token] = _pair.price0CumulativeLast();
+    price1CumulativeLastUpdate[token] = _pair.price1CumulativeLast();
     blockTimestampLastUpdate[token] = blockTimestampLast;
-    require(reserve0 != 0 && reserve1 != 0, 'ExampleOracleSimple: NO_RESERVES'); // ensure that there's liquidity in the pair
     uniswapPairs[token] = _pair;
     return true;
   }
