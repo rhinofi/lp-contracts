@@ -1,7 +1,7 @@
 {
   "name": "lp-contracts",
-  "version": "1.0.0",
-  "description": "Smart-contracts for delegating funds to DeversiFi for conditional transactions and withdrawals and earning fees as a liquidity provider",
+  "version": "0.1.0",
+  "description": "Smart-contracts for DeversiFi Earn: delegate funds to a pool for conditional transactions and withdrawals and earning fees as a liquidity provider",
   "main": "npm run test",
   "directories": {
     "test": "test"

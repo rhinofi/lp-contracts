@@ -1,4 +1,12 @@
-# DeversiFi Layer 1 Liquidity Provider Contracts
+# DeversiFi Earn: Earn yield as a liquidity provider whilst facilitating fast L1 transfers from DeversiFi's L2 Exchange
+
+### Summary
+
+These contracts create smart-contract pools which liquidity providers can deposit to in order to earn yield on their assets.
+
+Yield is generated via two mechanisms:
+1. Aave (https://aave.com/)
+2. Fees paid by users of DeversiFi who request ultra fast withdrawals
 
 ### DeversiFi Overview and Problem Statement
 
