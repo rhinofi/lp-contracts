@@ -1,0 +1,321 @@
+{
+  "contractName": "IQueryableFactRegistry",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "fact",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isValid",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "hasRegisteredFact",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.2+commit.bacdbe57\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"hasRegisteredFact\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"fact\",\"type\":\"bytes32\"}],\"name\":\"isValid\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol\":\"IQueryableFactRegistry\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IFactRegistry.sol\":{\"keccak256\":\"0x4636a29b9915af5ea722b4e356396eb3130369b1b6ee163a0cc35213f873b7cc\",\"urls\":[\"bzz-raw://44f59f64a3b1b47f46fe222b5f80a28d3eaf49135f74fbbbef87dc8bd82b63a4\",\"dweb:/ipfs/QmQUa7tGx1WVTZaEsEDW382Su4Ew6dRYo3RRszW2KDbWF1\"]},\"/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol\":{\"keccak256\":\"0xc7a016f60f8558db9c851b7f44e83056b1e4f06e99808558b271a2d3a8b2e8d4\",\"urls\":[\"bzz-raw://2baa9b142cb3b2e344d1ef4dfc122bd195d337c4fe9d028a29a2c431b39661ed\",\"dweb:/ipfs/QmdmryJGk4yVSZzWqwVrSGm8RztZrYCArmicEuigSWS8be\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "/*\n  Copyright 2019,2020 StarkWare Industries Ltd.\n\n  Licensed under the Apache License, Version 2.0 (the \"License\").\n  You may not use this file except in compliance with the License.\n  You may obtain a copy of the License at\n\n  https://www.starkware.co/open-source-license/\n\n  Unless required by applicable law or agreed to in writing,\n  software distributed under the License is distributed on an \"AS IS\" BASIS,\n  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  See the License for the specific language governing permissions\n  and limitations under the License.\n*/\npragma solidity ^0.6.2;\n\nimport \"./IFactRegistry.sol\";\n\n/*\n  Extends the IFactRegistry interface with a query method that indicates\n  whether the fact registry has successfully registered any fact or is still empty of such facts.\n*/\ninterface IQueryableFactRegistry is IFactRegistry {\n\n    /*\n      Returns true if at least one fact has been registered.\n    */\n    function hasRegisteredFact()\n        external view\n        returns(bool);\n\n}\n",
+  "sourcePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol",
+  "ast": {
+    "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol",
+    "exportedSymbols": {
+      "IQueryableFactRegistry": [
+        3032
+      ]
+    },
+    "id": 3033,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3023,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "596:23:14"
+      },
+      {
+        "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IFactRegistry.sol",
+        "file": "./IFactRegistry.sol",
+        "id": 3024,
+        "nodeType": "ImportDirective",
+        "scope": 3033,
+        "sourceUnit": 3022,
+        "src": "621:29:14",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 3025,
+              "name": "IFactRegistry",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3021,
+              "src": "865:13:14",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_IFactRegistry_$3021",
+                "typeString": "contract IFactRegistry"
+              }
+            },
+            "id": 3026,
+            "nodeType": "InheritanceSpecifier",
+            "src": "865:13:14"
+          }
+        ],
+        "contractDependencies": [
+          3021
+        ],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3032,
+        "linearizedBaseContracts": [
+          3032,
+          3021
+        ],
+        "name": "IQueryableFactRegistry",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "d6354e15",
+            "id": 3031,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "hasRegisteredFact",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3027,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "987:2:14"
+            },
+            "returnParameters": {
+              "id": 3030,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3029,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3031,
+                  "src": "1028:4:14",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3028,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1028:4:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1027:6:14"
+            },
+            "scope": 3032,
+            "src": "961:73:14",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3033,
+        "src": "829:208:14"
+      }
+    ],
+    "src": "596:442:14"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol",
+    "exportedSymbols": {
+      "IQueryableFactRegistry": [
+        3032
+      ]
+    },
+    "id": 3033,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3023,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "596:23:14"
+      },
+      {
+        "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IFactRegistry.sol",
+        "file": "./IFactRegistry.sol",
+        "id": 3024,
+        "nodeType": "ImportDirective",
+        "scope": 3033,
+        "sourceUnit": 3022,
+        "src": "621:29:14",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 3025,
+              "name": "IFactRegistry",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3021,
+              "src": "865:13:14",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_IFactRegistry_$3021",
+                "typeString": "contract IFactRegistry"
+              }
+            },
+            "id": 3026,
+            "nodeType": "InheritanceSpecifier",
+            "src": "865:13:14"
+          }
+        ],
+        "contractDependencies": [
+          3021
+        ],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3032,
+        "linearizedBaseContracts": [
+          3032,
+          3021
+        ],
+        "name": "IQueryableFactRegistry",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "d6354e15",
+            "id": 3031,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "hasRegisteredFact",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3027,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "987:2:14"
+            },
+            "returnParameters": {
+              "id": 3030,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3029,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3031,
+                  "src": "1028:4:14",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3028,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1028:4:14",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1027:6:14"
+            },
+            "scope": 3032,
+            "src": "961:73:14",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3033,
+        "src": "829:208:14"
+      }
+    ],
+    "src": "596:442:14"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.2+commit.bacdbe57.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2020-11-15T22:48:39.296Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
