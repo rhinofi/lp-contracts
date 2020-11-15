@@ -28,7 +28,8 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
   // In future this fee can either be set via an equation related to the size of withdrawal and pool
   // Or via governance of LP token holders
-  uint256 public sendAfterFee;
+  // inverseFee = 10000 - fee
+  uint256 public inverseFee;
   // Ratio of insurance fund to pool funds
   uint8 public reserveRatio;
   // Percentage of funds that LP can instantly withdraw
@@ -49,10 +50,10 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     __Ownable_init();
     contractName = string(abi.encodePacked("DeversiFi_MasterTransferRegistry_v0.0.1"));
     aaveLendingPoolRegistry = _aaveLendingPoolRegistry;
-    sendAfterFee = 9990;
+    inverseFee = 9990;
     reserveRatio = 2;
     targetAvailabilityPercentage = 20;
-    require(sendAfterFee < 10000);
+    require(inverseFee <= 10000);
     require(targetAvailabilityPercentage <= 100);
     require(reserveRatio > 1);
   }
@@ -111,16 +112,16 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       emit LogRegisteredTransfer(recipient, erc20, amount, salt);
 
       if (erc20 == address(0)) {
-        recordBorrowingFromPool(WETH, amount);
         WithdrawalPool(payable(tokenPools[WETH])).makeTemporaryLoanETH(payable(recipient), calculateAmountMinusFee(amount));
+        recordBorrowingFromPool(WETH, amount);
       } else {
-        recordBorrowingFromPool(erc20, amount);
         WithdrawalPool(payable(tokenPools[erc20])).makeTemporaryLoan(recipient, calculateAmountMinusFee(amount));
+        recordBorrowingFromPool(erc20, amount);
       }
   }
 
   function calculateAmountMinusFee(uint256 amount) internal view returns (uint256) {
-    return amount.mul(sendAfterFee).div(10000);
+    return amount.mul(inverseFee).div(10000);
   }
 
   function recordBorrowingFromPool(address erc20, uint256 amount) internal returns (bool) {
@@ -184,7 +185,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     // Fee must be between 0 and 1%
     require(_newFee <= 10000, "Registry: POOL_TRANSFER_FEE_MINIMUM_0%");
     require(_newFee >= 9900, "Registry: POOL_TRANSFER_FEE_MAXIMUM_1%");
-    sendAfterFee = _newFee;
+    inverseFee = _newFee;
   }
 
   function setAvailabilityPercentage(uint8 _newPercentage) external onlyOwner {

@@ -169,4 +169,24 @@ contract('MasterTransferRegistry', (accounts) => {
     await catchRevert(registry.unstakeNECCollateral(transferAmount))
   })
 
+  it('setTransferFee: cannot set the transfer fee above 1%', async () => {
+    await registry.setTransferFee(9900)
+
+    await catchRevert(registry.setTransferFee(9899))
+  })
+
+  it('setTransferFee: cannot set the transfer fee below 0%', async () => {
+    await registry.setTransferFee(10000)
+
+    await catchRevert(registry.setTransferFee(10001))
+  })
+
+  it('setAvailabilityPercentage: cannot set the availability percentage above 100%', async () => {
+    await registry.setAvailabilityPercentage(90)
+
+    await registry.setAvailabilityPercentage(100)
+
+    await catchRevert(registry.setAvailabilityPercentage(101))
+  })
+
 })

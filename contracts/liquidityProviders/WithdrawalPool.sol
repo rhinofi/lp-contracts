@@ -198,7 +198,8 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
     uint256 amountToReserve = amount.mul(targetReservedPercentage()).div(100);
     reservedUnderlyingBalance = reservedUnderlyingBalance.add(amountToReserve);
     if (isAaveActive()) {
-      depositToAave(amountToReserve);
+      uint256 amountToDeposit = reservedUnderlyingBalance.sub(inAaveSupply());
+      depositToAave(amountToDeposit);
     }
   }
 

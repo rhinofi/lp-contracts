@@ -61,14 +61,14 @@ contract('AaveManager', (accounts) => {
     await registry.setAaveIsActive(weth.address, true)
   })
 
-  it.only('deploy: pool gets deployed and has Aave enabled', async () => {
+  it('deploy: pool gets deployed and has Aave enabled', async () => {
     const address = await pool.poolToken()
     const aaveSetting = await registry.isAaveActive(pool.address)
     assert.equal(address, weth.address, 'Pool token not set')
     assert.equal(aaveSetting, true, 'Aave not enabled')
   })
 
-  it.only('joinPool: when depositing tokens to the pool, the correct proportion is subsequently deposited into Aave', async () => {
+  it('joinPool: when depositing tokens to the pool, the correct proportion is subsequently deposited into Aave', async () => {
     const depositAmount = _1e18.mul(new BN(1000))
     await weth.approve(pool.address, depositAmount, { from: accounts[1] })
     await pool.joinPool(depositAmount, { from: accounts[1] })
@@ -83,6 +83,79 @@ contract('AaveManager', (accounts) => {
 
     assert.equal(lendingPoolWETHBalance.toString(), _1e18.mul(new BN(200)).toString(), 'WETH not in correct ratio')
     assert.equal(lendingPoolATokenBalance.toString(), _1e18.mul(new BN(800)).toString(), 'AToken not in correct ratio')
+  })
+
+  it('joinPool: on the first deposit after aave being enabled, the full amount to achieve the target ratio is deposited', async () => {
+    await registry.setAaveIsActive(weth.address, false)
+    const depositAmount = _1e18.mul(new BN(1000))
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    await pool.joinPool(depositAmount, { from: accounts[1] })
+
+    await registry.setAaveIsActive(weth.address, true)
+
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    await pool.joinPool(depositAmount, { from: accounts[1] })
+
+    // To check:
+    // Lending Pool WETH balance is 400
+    // Lending Pool AToken balance is 1600
+    const lendingPoolWETHBalance = await weth.balanceOf(pool.address)
+    const lendingPoolATokenBalance = await aavePool.balanceOf(pool.address)
+
+    assert.equal(lendingPoolWETHBalance.toString(), _1e18.mul(new BN(400)).toString(), 'WETH not in correct ratio')
+    assert.equal(lendingPoolATokenBalance.toString(), _1e18.mul(new BN(1600)).toString(), 'AToken not in correct ratio')
+  })
+
+  it('transferForDeversifiWithdrawals: when transfering out more WETH than currently liquid, the required amount is withdrawn from Aave', async () => {
+    const depositAmount = _1e18.mul(new BN(100))
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    await pool.joinPool(depositAmount, { from: accounts[1] })
+
+    const stakeAmount = _1e18.mul(new BN(1000000000))
+    await nectar.mint(accounts[0], stakeAmount)
+    await nectar.approve(registry.address, stakeAmount)
+    await registry.stakeNECCollateral(stakeAmount)
+
+    const transferAmount = _1e18.mul(new BN(35))
+    await registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt())
+
+    const recipientWETHBalance = await weth.balanceOf(accounts[5])
+    const lendingPoolWETHBalance = await weth.balanceOf(pool.address)
+    const lendingPoolATokenBalance = await aavePool.balanceOf(pool.address)
+
+    const transferAmountAfterFee = transferAmount.mul(new BN(999)).div(new BN(1000))
+
+    assert.equal(recipientWETHBalance.toString(), transferAmountAfterFee.toString(), 'WETH not received by recipient')
+    assert.equal(lendingPoolWETHBalance.toString(), depositAmount.sub(transferAmountAfterFee).mul(new BN(20)).div(new BN(100)).toString(), 'WETH not in correct ratio')
+    assert.equal(lendingPoolATokenBalance.toString(), depositAmount.sub(transferAmountAfterFee).mul(new BN(80)).div(new BN(100)).toString(), 'AToken not in correct ratio')
+  })
+
+  it('transferForDeversifiWithdrawals: after Aave is enabled for a pool, transfering out WETH does not require a withdrawal from aave', async () => {
+    await registry.setAaveIsActive(weth.address, false)
+
+    const depositAmount = _1e18.mul(new BN(100))
+    await weth.approve(pool.address, depositAmount, { from: accounts[1] })
+    await pool.joinPool(depositAmount, { from: accounts[1] })
+
+    const stakeAmount = _1e18.mul(new BN(1000000000))
+    await nectar.mint(accounts[0], stakeAmount)
+    await nectar.approve(registry.address, stakeAmount)
+    await registry.stakeNECCollateral(stakeAmount)
+
+    await registry.setAaveIsActive(weth.address, true)
+
+    const transferAmount = _1e18.mul(new BN(35))
+    await registry.transferForDeversifiWithdrawals(weth.address, accounts[5], transferAmount, getRandomSalt())
+
+    const recipientWETHBalance = await weth.balanceOf(accounts[5])
+    const lendingPoolWETHBalance = await weth.balanceOf(pool.address)
+    const lendingPoolATokenBalance = await aavePool.balanceOf(pool.address)
+
+    const transferAmountAfterFee = transferAmount.mul(new BN(999)).div(new BN(1000))
+
+    assert.equal(recipientWETHBalance.toString(), transferAmountAfterFee.toString(), 'WETH not received by recipient')
+    assert.equal(lendingPoolWETHBalance.toString(), depositAmount.sub(transferAmountAfterFee).toString(), 'WETH not in correct ratio')
+    assert.equal(lendingPoolATokenBalance.toString(), '0', 'AToken not in correct ratio')
   })
 
 })
