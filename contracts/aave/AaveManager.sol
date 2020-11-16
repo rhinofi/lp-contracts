@@ -41,4 +41,15 @@ contract AaveManager {
       return IERC20(aTokenAddress).balanceOf(address(this));
     }
 
+    function isAssetSupported() public view returns (bool) {
+      ILendingPool lendingPool = ILendingPool(provider.getLendingPool());
+
+      // Initialize aToken
+      ( , , , , , , , address aTokenAddress, , , , ) = lendingPool.getReserveData(address(token));
+
+      if(aTokenAddress == address(0)) return false;
+
+      return true;
+    }
+
 }

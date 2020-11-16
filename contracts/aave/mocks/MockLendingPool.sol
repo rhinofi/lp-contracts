@@ -6,7 +6,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // For simplicity have combined lending pool and AToken in tests
 contract MockLendingPool is ERC20 {
 
-  constructor() public ERC20("Aave Interest Token", "ATKN") { }
+  address supportedAsset;
+
+  constructor(address _supportedAsset) public ERC20("Aave Interest Token", "ATKN") {
+    supportedAsset = _supportedAsset;
+  }
 
   function deposit(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external {
     _mint(msg.sender, amount);
@@ -39,7 +43,11 @@ contract MockLendingPool is ERC20 {
     currentVariableBorrowRate = 0;
     currentStableBorrowRate = 0;
     lastUpdateTimestamp = 0;
-    aTokenAddress = address(this);
+    if (asset == supportedAsset) {
+      aTokenAddress = address(this);
+    } else {
+      aTokenAddress = address(0);
+    }
     stableDebtTokenAddress = address(0);
     variableDebtTokenAddress = address(0);
     interestRateStrategyAddress = address(0);

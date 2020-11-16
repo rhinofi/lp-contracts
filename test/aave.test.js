@@ -39,7 +39,7 @@ contract('AaveManager', (accounts) => {
     await nectar.transfer(uni.address, _1e18.mul(new BN(50000)))
     await uni.mint(accounts[0], { from: accounts[0] })
 
-    aavePool = await MockLendingPool.new()
+    aavePool = await MockLendingPool.new(weth.address)
     aaveProvider = await MockLendingPoolAddressesProvider.new(aavePool.address)
 
     registry = await deployProxy(MasterTransferRegistry, [factory.address, weth.address, nectar.address, aaveProvider.address])

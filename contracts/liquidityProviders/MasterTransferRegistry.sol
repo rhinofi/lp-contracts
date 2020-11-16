@@ -207,6 +207,9 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     if (isAaveActive[poolAddress] == false) {
       WithdrawalPool(payable(poolAddress)).withdrawAllFromAave();
     }
+    if (isAaveActive[poolAddress] == true) {
+      require(WithdrawalPool(payable(poolAddress)).isAssetSupported());
+    }
   }
 
   function setTransferAdmin(address _admin) external onlyOwner {
