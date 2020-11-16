@@ -45,14 +45,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/FactRegistry.sol",
     "exportedSymbols": {
       "FactRegistry": [
-        3011
+        3085
       ]
     },
-    "id": 3012,
+    "id": 3086,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2947,
+        "id": 3021,
         "literals": [
           "solidity",
           "^",
@@ -65,10 +65,10 @@
       {
         "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol",
         "file": "./IQueryableFactRegistry.sol",
-        "id": 2948,
+        "id": 3022,
         "nodeType": "ImportDirective",
-        "scope": 3012,
-        "sourceUnit": 3033,
+        "scope": 3086,
+        "sourceUnit": 3107,
         "src": "621:38:12",
         "symbolAliases": [],
         "unitAlias": ""
@@ -80,44 +80,44 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 2949,
+              "id": 3023,
               "name": "IQueryableFactRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3032,
+              "referencedDeclaration": 3106,
               "src": "686:22:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IQueryableFactRegistry_$3032",
+                "typeIdentifier": "t_contract$_IQueryableFactRegistry_$3106",
                 "typeString": "contract IQueryableFactRegistry"
               }
             },
-            "id": 2950,
+            "id": 3024,
             "nodeType": "InheritanceSpecifier",
             "src": "686:22:12"
           }
         ],
         "contractDependencies": [
-          3021,
-          3032
+          3095,
+          3106
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 3011,
+        "id": 3085,
         "linearizedBaseContracts": [
-          3011,
-          3032,
-          3021
+          3085,
+          3106,
+          3095
         ],
         "name": "FactRegistry",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 2954,
+            "id": 3028,
             "name": "verifiedFact",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 3011,
+            "scope": 3085,
             "src": "750:46:12",
             "stateVariable": true,
             "storageLocation": "default",
@@ -126,9 +126,9 @@
               "typeString": "mapping(bytes32 => bool)"
             },
             "typeName": {
-              "id": 2953,
+              "id": 3027,
               "keyType": {
-                "id": 2951,
+                "id": 3025,
                 "name": "bytes32",
                 "nodeType": "ElementaryTypeName",
                 "src": "759:7:12",
@@ -144,7 +144,7 @@
                 "typeString": "mapping(bytes32 => bool)"
               },
               "valueType": {
-                "id": 2952,
+                "id": 3026,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "770:4:12",
@@ -159,11 +159,11 @@
           },
           {
             "constant": false,
-            "id": 2956,
+            "id": 3030,
             "name": "anyFactRegistered",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 3011,
+            "scope": 3085,
             "src": "880:22:12",
             "stateVariable": true,
             "storageLocation": "default",
@@ -172,7 +172,7 @@
               "typeString": "bool"
             },
             "typeName": {
-              "id": 2955,
+              "id": 3029,
               "name": "bool",
               "nodeType": "ElementaryTypeName",
               "src": "880:4:12",
@@ -186,10 +186,10 @@
           },
           {
             "baseFunctions": [
-              3020
+              3094
             ],
             "body": {
-              "id": 2968,
+              "id": 3042,
               "nodeType": "Block",
               "src": "1053:40:12",
               "statements": [
@@ -199,11 +199,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 2965,
+                        "id": 3039,
                         "name": "fact",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2958,
+                        "referencedDeclaration": 3032,
                         "src": "1081:4:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -218,18 +218,18 @@
                           "typeString": "bytes32"
                         }
                       ],
-                      "id": 2964,
+                      "id": 3038,
                       "name": "_factCheck",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2981,
+                      "referencedDeclaration": 3055,
                       "src": "1070:10:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_view$_t_bytes32_$returns$_t_bool_$",
                         "typeString": "function (bytes32) view returns (bool)"
                       }
                     },
-                    "id": 2966,
+                    "id": 3040,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -244,8 +244,8 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 2963,
-                  "id": 2967,
+                  "functionReturnParameters": 3037,
+                  "id": 3041,
                   "nodeType": "Return",
                   "src": "1063:23:12"
                 }
@@ -253,29 +253,29 @@
             },
             "documentation": null,
             "functionSelector": "6a938567",
-            "id": 2969,
+            "id": 3043,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "isValid",
             "nodeType": "FunctionDefinition",
             "overrides": {
-              "id": 2960,
+              "id": 3034,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
               "src": "1018:8:12"
             },
             "parameters": {
-              "id": 2959,
+              "id": 3033,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2958,
+                  "id": 3032,
                   "name": "fact",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2969,
+                  "scope": 3043,
                   "src": "982:12:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -284,7 +284,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2957,
+                    "id": 3031,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "982:7:12",
@@ -300,16 +300,16 @@
               "src": "981:14:12"
             },
             "returnParameters": {
-              "id": 2963,
+              "id": 3037,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2962,
+                  "id": 3036,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2969,
+                  "scope": 3043,
                   "src": "1043:4:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -318,7 +318,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 2961,
+                    "id": 3035,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1043:4:12",
@@ -333,7 +333,7 @@
               ],
               "src": "1042:6:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "965:128:12",
             "stateMutability": "view",
             "virtual": false,
@@ -341,7 +341,7 @@
           },
           {
             "body": {
-              "id": 2980,
+              "id": 3054,
               "nodeType": "Block",
               "src": "1473:42:12",
               "statements": [
@@ -350,25 +350,25 @@
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 2976,
+                      "id": 3050,
                       "name": "verifiedFact",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2954,
+                      "referencedDeclaration": 3028,
                       "src": "1490:12:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
                         "typeString": "mapping(bytes32 => bool)"
                       }
                     },
-                    "id": 2978,
+                    "id": 3052,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 2977,
+                      "id": 3051,
                       "name": "fact",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2971,
+                      "referencedDeclaration": 3045,
                       "src": "1503:4:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
@@ -386,15 +386,15 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 2975,
-                  "id": 2979,
+                  "functionReturnParameters": 3049,
+                  "id": 3053,
                   "nodeType": "Return",
                   "src": "1483:25:12"
                 }
               ]
             },
             "documentation": null,
-            "id": 2981,
+            "id": 3055,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -402,16 +402,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 2972,
+              "id": 3046,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2971,
+                  "id": 3045,
                   "name": "fact",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2981,
+                  "scope": 3055,
                   "src": "1411:12:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -420,7 +420,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2970,
+                    "id": 3044,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1411:7:12",
@@ -436,16 +436,16 @@
               "src": "1410:14:12"
             },
             "returnParameters": {
-              "id": 2975,
+              "id": 3049,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2974,
+                  "id": 3048,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2981,
+                  "scope": 3055,
                   "src": "1463:4:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -454,7 +454,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 2973,
+                    "id": 3047,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1463:4:12",
@@ -469,7 +469,7 @@
               ],
               "src": "1462:6:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "1391:124:12",
             "stateMutability": "view",
             "virtual": false,
@@ -477,14 +477,14 @@
           },
           {
             "body": {
-              "id": 3000,
+              "id": 3074,
               "nodeType": "Block",
               "src": "1600:223:12",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 2990,
+                    "id": 3064,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -493,25 +493,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 2986,
+                        "id": 3060,
                         "name": "verifiedFact",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2954,
+                        "referencedDeclaration": 3028,
                         "src": "1672:12:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
                           "typeString": "mapping(bytes32 => bool)"
                         }
                       },
-                      "id": 2988,
+                      "id": 3062,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 2987,
+                        "id": 3061,
                         "name": "factHash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2983,
+                        "referencedDeclaration": 3057,
                         "src": "1685:8:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -534,7 +534,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "74727565",
-                      "id": 2989,
+                      "id": 3063,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -555,14 +555,14 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 2991,
+                  "id": 3065,
                   "nodeType": "ExpressionStatement",
                   "src": "1672:29:12"
                 },
                 {
                   "condition": {
                     "argumentTypes": null,
-                    "id": 2993,
+                    "id": 3067,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -573,11 +573,11 @@
                     "src": "1748:18:12",
                     "subExpression": {
                       "argumentTypes": null,
-                      "id": 2992,
+                      "id": 3066,
                       "name": "anyFactRegistered",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2956,
+                      "referencedDeclaration": 3030,
                       "src": "1749:17:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
@@ -590,29 +590,29 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 2999,
+                  "id": 3073,
                   "nodeType": "IfStatement",
                   "src": "1744:73:12",
                   "trueBody": {
-                    "id": 2998,
+                    "id": 3072,
                     "nodeType": "Block",
                     "src": "1768:49:12",
                     "statements": [
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 2996,
+                          "id": 3070,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftHandSide": {
                             "argumentTypes": null,
-                            "id": 2994,
+                            "id": 3068,
                             "name": "anyFactRegistered",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2956,
+                            "referencedDeclaration": 3030,
                             "src": "1782:17:12",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bool",
@@ -624,7 +624,7 @@
                           "rightHandSide": {
                             "argumentTypes": null,
                             "hexValue": "74727565",
-                            "id": 2995,
+                            "id": 3069,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -645,7 +645,7 @@
                             "typeString": "bool"
                           }
                         },
-                        "id": 2997,
+                        "id": 3071,
                         "nodeType": "ExpressionStatement",
                         "src": "1782:24:12"
                       }
@@ -655,7 +655,7 @@
               ]
             },
             "documentation": null,
-            "id": 3001,
+            "id": 3075,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -663,16 +663,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 2984,
+              "id": 3058,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2983,
+                  "id": 3057,
                   "name": "factHash",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3001,
+                  "scope": 3075,
                   "src": "1552:16:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -681,7 +681,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2982,
+                    "id": 3056,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1552:7:12",
@@ -697,12 +697,12 @@
               "src": "1542:36:12"
             },
             "returnParameters": {
-              "id": 2985,
+              "id": 3059,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1600:0:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "1521:302:12",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -710,29 +710,29 @@
           },
           {
             "baseFunctions": [
-              3031
+              3105
             ],
             "body": {
-              "id": 3009,
+              "id": 3083,
               "nodeType": "Block",
               "src": "1987:41:12",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 3007,
+                    "id": 3081,
                     "name": "anyFactRegistered",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 2956,
+                    "referencedDeclaration": 3030,
                     "src": "2004:17:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 3006,
-                  "id": 3008,
+                  "functionReturnParameters": 3080,
+                  "id": 3082,
                   "nodeType": "Return",
                   "src": "1997:24:12"
                 }
@@ -740,35 +740,35 @@
             },
             "documentation": null,
             "functionSelector": "d6354e15",
-            "id": 3010,
+            "id": 3084,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "hasRegisteredFact",
             "nodeType": "FunctionDefinition",
             "overrides": {
-              "id": 3003,
+              "id": 3077,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
               "src": "1952:8:12"
             },
             "parameters": {
-              "id": 3002,
+              "id": 3076,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1927:2:12"
             },
             "returnParameters": {
-              "id": 3006,
+              "id": 3080,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3005,
+                  "id": 3079,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3010,
+                  "scope": 3084,
                   "src": "1977:4:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -777,7 +777,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3004,
+                    "id": 3078,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1977:4:12",
@@ -792,14 +792,14 @@
               ],
               "src": "1976:6:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "1901:127:12",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3012,
+        "scope": 3086,
         "src": "661:1370:12"
       }
     ],
@@ -809,14 +809,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/FactRegistry.sol",
     "exportedSymbols": {
       "FactRegistry": [
-        3011
+        3085
       ]
     },
-    "id": 3012,
+    "id": 3086,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2947,
+        "id": 3021,
         "literals": [
           "solidity",
           "^",
@@ -829,10 +829,10 @@
       {
         "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol",
         "file": "./IQueryableFactRegistry.sol",
-        "id": 2948,
+        "id": 3022,
         "nodeType": "ImportDirective",
-        "scope": 3012,
-        "sourceUnit": 3033,
+        "scope": 3086,
+        "sourceUnit": 3107,
         "src": "621:38:12",
         "symbolAliases": [],
         "unitAlias": ""
@@ -844,44 +844,44 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 2949,
+              "id": 3023,
               "name": "IQueryableFactRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3032,
+              "referencedDeclaration": 3106,
               "src": "686:22:12",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IQueryableFactRegistry_$3032",
+                "typeIdentifier": "t_contract$_IQueryableFactRegistry_$3106",
                 "typeString": "contract IQueryableFactRegistry"
               }
             },
-            "id": 2950,
+            "id": 3024,
             "nodeType": "InheritanceSpecifier",
             "src": "686:22:12"
           }
         ],
         "contractDependencies": [
-          3021,
-          3032
+          3095,
+          3106
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 3011,
+        "id": 3085,
         "linearizedBaseContracts": [
-          3011,
-          3032,
-          3021
+          3085,
+          3106,
+          3095
         ],
         "name": "FactRegistry",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 2954,
+            "id": 3028,
             "name": "verifiedFact",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 3011,
+            "scope": 3085,
             "src": "750:46:12",
             "stateVariable": true,
             "storageLocation": "default",
@@ -890,9 +890,9 @@
               "typeString": "mapping(bytes32 => bool)"
             },
             "typeName": {
-              "id": 2953,
+              "id": 3027,
               "keyType": {
-                "id": 2951,
+                "id": 3025,
                 "name": "bytes32",
                 "nodeType": "ElementaryTypeName",
                 "src": "759:7:12",
@@ -908,7 +908,7 @@
                 "typeString": "mapping(bytes32 => bool)"
               },
               "valueType": {
-                "id": 2952,
+                "id": 3026,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "770:4:12",
@@ -923,11 +923,11 @@
           },
           {
             "constant": false,
-            "id": 2956,
+            "id": 3030,
             "name": "anyFactRegistered",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 3011,
+            "scope": 3085,
             "src": "880:22:12",
             "stateVariable": true,
             "storageLocation": "default",
@@ -936,7 +936,7 @@
               "typeString": "bool"
             },
             "typeName": {
-              "id": 2955,
+              "id": 3029,
               "name": "bool",
               "nodeType": "ElementaryTypeName",
               "src": "880:4:12",
@@ -950,10 +950,10 @@
           },
           {
             "baseFunctions": [
-              3020
+              3094
             ],
             "body": {
-              "id": 2968,
+              "id": 3042,
               "nodeType": "Block",
               "src": "1053:40:12",
               "statements": [
@@ -963,11 +963,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 2965,
+                        "id": 3039,
                         "name": "fact",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2958,
+                        "referencedDeclaration": 3032,
                         "src": "1081:4:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -982,18 +982,18 @@
                           "typeString": "bytes32"
                         }
                       ],
-                      "id": 2964,
+                      "id": 3038,
                       "name": "_factCheck",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2981,
+                      "referencedDeclaration": 3055,
                       "src": "1070:10:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_view$_t_bytes32_$returns$_t_bool_$",
                         "typeString": "function (bytes32) view returns (bool)"
                       }
                     },
-                    "id": 2966,
+                    "id": 3040,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1008,8 +1008,8 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 2963,
-                  "id": 2967,
+                  "functionReturnParameters": 3037,
+                  "id": 3041,
                   "nodeType": "Return",
                   "src": "1063:23:12"
                 }
@@ -1017,29 +1017,29 @@
             },
             "documentation": null,
             "functionSelector": "6a938567",
-            "id": 2969,
+            "id": 3043,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "isValid",
             "nodeType": "FunctionDefinition",
             "overrides": {
-              "id": 2960,
+              "id": 3034,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
               "src": "1018:8:12"
             },
             "parameters": {
-              "id": 2959,
+              "id": 3033,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2958,
+                  "id": 3032,
                   "name": "fact",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2969,
+                  "scope": 3043,
                   "src": "982:12:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1048,7 +1048,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2957,
+                    "id": 3031,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "982:7:12",
@@ -1064,16 +1064,16 @@
               "src": "981:14:12"
             },
             "returnParameters": {
-              "id": 2963,
+              "id": 3037,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2962,
+                  "id": 3036,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2969,
+                  "scope": 3043,
                   "src": "1043:4:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1082,7 +1082,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 2961,
+                    "id": 3035,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1043:4:12",
@@ -1097,7 +1097,7 @@
               ],
               "src": "1042:6:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "965:128:12",
             "stateMutability": "view",
             "virtual": false,
@@ -1105,7 +1105,7 @@
           },
           {
             "body": {
-              "id": 2980,
+              "id": 3054,
               "nodeType": "Block",
               "src": "1473:42:12",
               "statements": [
@@ -1114,25 +1114,25 @@
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 2976,
+                      "id": 3050,
                       "name": "verifiedFact",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2954,
+                      "referencedDeclaration": 3028,
                       "src": "1490:12:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
                         "typeString": "mapping(bytes32 => bool)"
                       }
                     },
-                    "id": 2978,
+                    "id": 3052,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 2977,
+                      "id": 3051,
                       "name": "fact",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2971,
+                      "referencedDeclaration": 3045,
                       "src": "1503:4:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
@@ -1150,15 +1150,15 @@
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 2975,
-                  "id": 2979,
+                  "functionReturnParameters": 3049,
+                  "id": 3053,
                   "nodeType": "Return",
                   "src": "1483:25:12"
                 }
               ]
             },
             "documentation": null,
-            "id": 2981,
+            "id": 3055,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -1166,16 +1166,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 2972,
+              "id": 3046,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2971,
+                  "id": 3045,
                   "name": "fact",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2981,
+                  "scope": 3055,
                   "src": "1411:12:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1184,7 +1184,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2970,
+                    "id": 3044,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1411:7:12",
@@ -1200,16 +1200,16 @@
               "src": "1410:14:12"
             },
             "returnParameters": {
-              "id": 2975,
+              "id": 3049,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2974,
+                  "id": 3048,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 2981,
+                  "scope": 3055,
                   "src": "1463:4:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1218,7 +1218,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 2973,
+                    "id": 3047,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1463:4:12",
@@ -1233,7 +1233,7 @@
               ],
               "src": "1462:6:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "1391:124:12",
             "stateMutability": "view",
             "virtual": false,
@@ -1241,14 +1241,14 @@
           },
           {
             "body": {
-              "id": 3000,
+              "id": 3074,
               "nodeType": "Block",
               "src": "1600:223:12",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 2990,
+                    "id": 3064,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1257,25 +1257,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 2986,
+                        "id": 3060,
                         "name": "verifiedFact",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2954,
+                        "referencedDeclaration": 3028,
                         "src": "1672:12:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
                           "typeString": "mapping(bytes32 => bool)"
                         }
                       },
-                      "id": 2988,
+                      "id": 3062,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 2987,
+                        "id": 3061,
                         "name": "factHash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2983,
+                        "referencedDeclaration": 3057,
                         "src": "1685:8:12",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
@@ -1298,7 +1298,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "74727565",
-                      "id": 2989,
+                      "id": 3063,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -1319,14 +1319,14 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 2991,
+                  "id": 3065,
                   "nodeType": "ExpressionStatement",
                   "src": "1672:29:12"
                 },
                 {
                   "condition": {
                     "argumentTypes": null,
-                    "id": 2993,
+                    "id": 3067,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1337,11 +1337,11 @@
                     "src": "1748:18:12",
                     "subExpression": {
                       "argumentTypes": null,
-                      "id": 2992,
+                      "id": 3066,
                       "name": "anyFactRegistered",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2956,
+                      "referencedDeclaration": 3030,
                       "src": "1749:17:12",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
@@ -1354,29 +1354,29 @@
                     }
                   },
                   "falseBody": null,
-                  "id": 2999,
+                  "id": 3073,
                   "nodeType": "IfStatement",
                   "src": "1744:73:12",
                   "trueBody": {
-                    "id": 2998,
+                    "id": 3072,
                     "nodeType": "Block",
                     "src": "1768:49:12",
                     "statements": [
                       {
                         "expression": {
                           "argumentTypes": null,
-                          "id": 2996,
+                          "id": 3070,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftHandSide": {
                             "argumentTypes": null,
-                            "id": 2994,
+                            "id": 3068,
                             "name": "anyFactRegistered",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2956,
+                            "referencedDeclaration": 3030,
                             "src": "1782:17:12",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bool",
@@ -1388,7 +1388,7 @@
                           "rightHandSide": {
                             "argumentTypes": null,
                             "hexValue": "74727565",
-                            "id": 2995,
+                            "id": 3069,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -1409,7 +1409,7 @@
                             "typeString": "bool"
                           }
                         },
-                        "id": 2997,
+                        "id": 3071,
                         "nodeType": "ExpressionStatement",
                         "src": "1782:24:12"
                       }
@@ -1419,7 +1419,7 @@
               ]
             },
             "documentation": null,
-            "id": 3001,
+            "id": 3075,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -1427,16 +1427,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 2984,
+              "id": 3058,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2983,
+                  "id": 3057,
                   "name": "factHash",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3001,
+                  "scope": 3075,
                   "src": "1552:16:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1445,7 +1445,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2982,
+                    "id": 3056,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1552:7:12",
@@ -1461,12 +1461,12 @@
               "src": "1542:36:12"
             },
             "returnParameters": {
-              "id": 2985,
+              "id": 3059,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1600:0:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "1521:302:12",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1474,29 +1474,29 @@
           },
           {
             "baseFunctions": [
-              3031
+              3105
             ],
             "body": {
-              "id": 3009,
+              "id": 3083,
               "nodeType": "Block",
               "src": "1987:41:12",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 3007,
+                    "id": 3081,
                     "name": "anyFactRegistered",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 2956,
+                    "referencedDeclaration": 3030,
                     "src": "2004:17:12",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
                     }
                   },
-                  "functionReturnParameters": 3006,
-                  "id": 3008,
+                  "functionReturnParameters": 3080,
+                  "id": 3082,
                   "nodeType": "Return",
                   "src": "1997:24:12"
                 }
@@ -1504,35 +1504,35 @@
             },
             "documentation": null,
             "functionSelector": "d6354e15",
-            "id": 3010,
+            "id": 3084,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "hasRegisteredFact",
             "nodeType": "FunctionDefinition",
             "overrides": {
-              "id": 3003,
+              "id": 3077,
               "nodeType": "OverrideSpecifier",
               "overrides": [],
               "src": "1952:8:12"
             },
             "parameters": {
-              "id": 3002,
+              "id": 3076,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1927:2:12"
             },
             "returnParameters": {
-              "id": 3006,
+              "id": 3080,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3005,
+                  "id": 3079,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3010,
+                  "scope": 3084,
                   "src": "1977:4:12",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1541,7 +1541,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3004,
+                    "id": 3078,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1977:4:12",
@@ -1556,14 +1556,14 @@
               ],
               "src": "1976:6:12"
             },
-            "scope": 3011,
+            "scope": 3085,
             "src": "1901:127:12",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3012,
+        "scope": 3086,
         "src": "661:1370:12"
       }
     ],
@@ -1575,7 +1575,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.4",
-  "updatedAt": "2020-11-15T22:48:39.293Z",
+  "updatedAt": "2020-11-16T00:53:43.545Z",
   "devdoc": {
     "methods": {}
   },

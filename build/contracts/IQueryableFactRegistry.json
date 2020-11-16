@@ -45,14 +45,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol",
     "exportedSymbols": {
       "IQueryableFactRegistry": [
-        3032
+        3106
       ]
     },
-    "id": 3033,
+    "id": 3107,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3023,
+        "id": 3097,
         "literals": [
           "solidity",
           "^",
@@ -65,10 +65,10 @@
       {
         "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IFactRegistry.sol",
         "file": "./IFactRegistry.sol",
-        "id": 3024,
+        "id": 3098,
         "nodeType": "ImportDirective",
-        "scope": 3033,
-        "sourceUnit": 3022,
+        "scope": 3107,
+        "sourceUnit": 3096,
         "src": "621:29:14",
         "symbolAliases": [],
         "unitAlias": ""
@@ -80,31 +80,31 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 3025,
+              "id": 3099,
               "name": "IFactRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3021,
+              "referencedDeclaration": 3095,
               "src": "865:13:14",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IFactRegistry_$3021",
+                "typeIdentifier": "t_contract$_IFactRegistry_$3095",
                 "typeString": "contract IFactRegistry"
               }
             },
-            "id": 3026,
+            "id": 3100,
             "nodeType": "InheritanceSpecifier",
             "src": "865:13:14"
           }
         ],
         "contractDependencies": [
-          3021
+          3095
         ],
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3032,
+        "id": 3106,
         "linearizedBaseContracts": [
-          3032,
-          3021
+          3106,
+          3095
         ],
         "name": "IQueryableFactRegistry",
         "nodeType": "ContractDefinition",
@@ -113,7 +113,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "d6354e15",
-            "id": 3031,
+            "id": 3105,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -121,22 +121,22 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3027,
+              "id": 3101,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "987:2:14"
             },
             "returnParameters": {
-              "id": 3030,
+              "id": 3104,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3029,
+                  "id": 3103,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3031,
+                  "scope": 3105,
                   "src": "1028:4:14",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -145,7 +145,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3028,
+                    "id": 3102,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1028:4:14",
@@ -160,14 +160,14 @@
               ],
               "src": "1027:6:14"
             },
-            "scope": 3032,
+            "scope": 3106,
             "src": "961:73:14",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3033,
+        "scope": 3107,
         "src": "829:208:14"
       }
     ],
@@ -177,14 +177,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IQueryableFactRegistry.sol",
     "exportedSymbols": {
       "IQueryableFactRegistry": [
-        3032
+        3106
       ]
     },
-    "id": 3033,
+    "id": 3107,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3023,
+        "id": 3097,
         "literals": [
           "solidity",
           "^",
@@ -197,10 +197,10 @@
       {
         "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IFactRegistry.sol",
         "file": "./IFactRegistry.sol",
-        "id": 3024,
+        "id": 3098,
         "nodeType": "ImportDirective",
-        "scope": 3033,
-        "sourceUnit": 3022,
+        "scope": 3107,
+        "sourceUnit": 3096,
         "src": "621:29:14",
         "symbolAliases": [],
         "unitAlias": ""
@@ -212,31 +212,31 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 3025,
+              "id": 3099,
               "name": "IFactRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3021,
+              "referencedDeclaration": 3095,
               "src": "865:13:14",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_IFactRegistry_$3021",
+                "typeIdentifier": "t_contract$_IFactRegistry_$3095",
                 "typeString": "contract IFactRegistry"
               }
             },
-            "id": 3026,
+            "id": 3100,
             "nodeType": "InheritanceSpecifier",
             "src": "865:13:14"
           }
         ],
         "contractDependencies": [
-          3021
+          3095
         ],
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3032,
+        "id": 3106,
         "linearizedBaseContracts": [
-          3032,
-          3021
+          3106,
+          3095
         ],
         "name": "IQueryableFactRegistry",
         "nodeType": "ContractDefinition",
@@ -245,7 +245,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "d6354e15",
-            "id": 3031,
+            "id": 3105,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -253,22 +253,22 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3027,
+              "id": 3101,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "987:2:14"
             },
             "returnParameters": {
-              "id": 3030,
+              "id": 3104,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3029,
+                  "id": 3103,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3031,
+                  "scope": 3105,
                   "src": "1028:4:14",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -277,7 +277,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3028,
+                    "id": 3102,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1028:4:14",
@@ -292,14 +292,14 @@
               ],
               "src": "1027:6:14"
             },
-            "scope": 3032,
+            "scope": 3106,
             "src": "961:73:14",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3033,
+        "scope": 3107,
         "src": "829:208:14"
       }
     ],
@@ -311,7 +311,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.4",
-  "updatedAt": "2020-11-15T22:48:39.296Z",
+  "updatedAt": "2020-11-16T00:53:43.548Z",
   "devdoc": {
     "methods": {}
   },

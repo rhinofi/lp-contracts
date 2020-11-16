@@ -32,14 +32,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IFactRegistry.sol",
     "exportedSymbols": {
       "IFactRegistry": [
-        3021
+        3095
       ]
     },
-    "id": 3022,
+    "id": 3096,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3013,
+        "id": 3087,
         "literals": [
           "solidity",
           "^",
@@ -56,9 +56,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3021,
+        "id": 3095,
         "linearizedBaseContracts": [
-          3021
+          3095
         ],
         "name": "IFactRegistry",
         "nodeType": "ContractDefinition",
@@ -67,7 +67,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "6a938567",
-            "id": 3020,
+            "id": 3094,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -75,16 +75,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3016,
+              "id": 3090,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3015,
+                  "id": 3089,
                   "name": "fact",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3020,
+                  "scope": 3094,
                   "src": "1550:12:13",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -93,7 +93,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 3014,
+                    "id": 3088,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1550:7:13",
@@ -109,16 +109,16 @@
               "src": "1549:14:13"
             },
             "returnParameters": {
-              "id": 3019,
+              "id": 3093,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3018,
+                  "id": 3092,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3020,
+                  "scope": 3094,
                   "src": "1602:4:13",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -127,7 +127,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3017,
+                    "id": 3091,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1602:4:13",
@@ -142,14 +142,14 @@
               ],
               "src": "1601:6:13"
             },
-            "scope": 3021,
+            "scope": 3095,
             "src": "1533:75:13",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3022,
+        "scope": 3096,
         "src": "1409:201:13"
       }
     ],
@@ -159,14 +159,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/IFactRegistry.sol",
     "exportedSymbols": {
       "IFactRegistry": [
-        3021
+        3095
       ]
     },
-    "id": 3022,
+    "id": 3096,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3013,
+        "id": 3087,
         "literals": [
           "solidity",
           "^",
@@ -183,9 +183,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3021,
+        "id": 3095,
         "linearizedBaseContracts": [
-          3021
+          3095
         ],
         "name": "IFactRegistry",
         "nodeType": "ContractDefinition",
@@ -194,7 +194,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "6a938567",
-            "id": 3020,
+            "id": 3094,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -202,16 +202,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3016,
+              "id": 3090,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3015,
+                  "id": 3089,
                   "name": "fact",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3020,
+                  "scope": 3094,
                   "src": "1550:12:13",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -220,7 +220,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 3014,
+                    "id": 3088,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1550:7:13",
@@ -236,16 +236,16 @@
               "src": "1549:14:13"
             },
             "returnParameters": {
-              "id": 3019,
+              "id": 3093,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3018,
+                  "id": 3092,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3020,
+                  "scope": 3094,
                   "src": "1602:4:13",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -254,7 +254,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 3017,
+                    "id": 3091,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1602:4:13",
@@ -269,14 +269,14 @@
               ],
               "src": "1601:6:13"
             },
-            "scope": 3021,
+            "scope": 3095,
             "src": "1533:75:13",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3022,
+        "scope": 3096,
         "src": "1409:201:13"
       }
     ],
@@ -288,7 +288,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.4",
-  "updatedAt": "2020-11-15T22:48:39.295Z",
+  "updatedAt": "2020-11-16T00:53:43.548Z",
   "devdoc": {
     "methods": {}
   },

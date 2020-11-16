@@ -299,14 +299,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/liquidityProviders/WithdrawalPoolToken.sol",
     "exportedSymbols": {
       "WithdrawalPoolToken": [
-        1989
+        2063
       ]
     },
-    "id": 1990,
+    "id": 2064,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1973,
+        "id": 2047,
         "literals": [
           "solidity",
           "^",
@@ -319,10 +319,10 @@
       {
         "absolutePath": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
-        "id": 1974,
+        "id": 2048,
         "nodeType": "ImportDirective",
-        "scope": 1990,
-        "sourceUnit": 4306,
+        "scope": 2064,
+        "sourceUnit": 4380,
         "src": "25:55:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -334,48 +334,48 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1975,
+              "id": 2049,
               "name": "ERC20",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 4305,
+              "referencedDeclaration": 4379,
               "src": "114:5:8",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ERC20_$4305",
+                "typeIdentifier": "t_contract$_ERC20_$4379",
                 "typeString": "contract ERC20"
               }
             },
-            "id": 1976,
+            "id": 2050,
             "nodeType": "InheritanceSpecifier",
             "src": "114:5:8"
           }
         ],
         "contractDependencies": [
-          3630,
-          4305,
-          4374
+          3704,
+          4379,
+          4448
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1989,
+        "id": 2063,
         "linearizedBaseContracts": [
-          1989,
-          4305,
-          4374,
-          3630
+          2063,
+          4379,
+          4448,
+          3704
         ],
         "name": "WithdrawalPoolToken",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 1987,
+              "id": 2061,
               "nodeType": "Block",
               "src": "207:6:8",
               "statements": []
             },
             "documentation": null,
-            "id": 1988,
+            "id": 2062,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
@@ -383,11 +383,11 @@
                 "arguments": [
                   {
                     "argumentTypes": null,
-                    "id": 1983,
+                    "id": 2057,
                     "name": "name",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1978,
+                    "referencedDeclaration": 2052,
                     "src": "193:4:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_memory_ptr",
@@ -396,11 +396,11 @@
                   },
                   {
                     "argumentTypes": null,
-                    "id": 1984,
+                    "id": 2058,
                     "name": "symbol",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1980,
+                    "referencedDeclaration": 2054,
                     "src": "199:6:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_memory_ptr",
@@ -408,17 +408,17 @@
                     }
                   }
                 ],
-                "id": 1985,
+                "id": 2059,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 1982,
+                  "id": 2056,
                   "name": "ERC20",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 4305,
+                  "referencedDeclaration": 4379,
                   "src": "187:5:8",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_type$_t_contract$_ERC20_$4305_$",
+                    "typeIdentifier": "t_type$_t_contract$_ERC20_$4379_$",
                     "typeString": "type(contract ERC20)"
                   }
                 },
@@ -430,16 +430,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1981,
+              "id": 2055,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1978,
+                  "id": 2052,
                   "name": "name",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1988,
+                  "scope": 2062,
                   "src": "138:18:8",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -448,7 +448,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1977,
+                    "id": 2051,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "138:6:8",
@@ -462,11 +462,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1980,
+                  "id": 2054,
                   "name": "symbol",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1988,
+                  "scope": 2062,
                   "src": "158:20:8",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -475,7 +475,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1979,
+                    "id": 2053,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "158:6:8",
@@ -491,19 +491,19 @@
               "src": "137:42:8"
             },
             "returnParameters": {
-              "id": 1986,
+              "id": 2060,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "207:0:8"
             },
-            "scope": 1989,
+            "scope": 2063,
             "src": "125:88:8",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 1990,
+        "scope": 2064,
         "src": "82:133:8"
       }
     ],
@@ -513,14 +513,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/liquidityProviders/WithdrawalPoolToken.sol",
     "exportedSymbols": {
       "WithdrawalPoolToken": [
-        1989
+        2063
       ]
     },
-    "id": 1990,
+    "id": 2064,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1973,
+        "id": 2047,
         "literals": [
           "solidity",
           "^",
@@ -533,10 +533,10 @@
       {
         "absolutePath": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         "file": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
-        "id": 1974,
+        "id": 2048,
         "nodeType": "ImportDirective",
-        "scope": 1990,
-        "sourceUnit": 4306,
+        "scope": 2064,
+        "sourceUnit": 4380,
         "src": "25:55:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -548,48 +548,48 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1975,
+              "id": 2049,
               "name": "ERC20",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 4305,
+              "referencedDeclaration": 4379,
               "src": "114:5:8",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ERC20_$4305",
+                "typeIdentifier": "t_contract$_ERC20_$4379",
                 "typeString": "contract ERC20"
               }
             },
-            "id": 1976,
+            "id": 2050,
             "nodeType": "InheritanceSpecifier",
             "src": "114:5:8"
           }
         ],
         "contractDependencies": [
-          3630,
-          4305,
-          4374
+          3704,
+          4379,
+          4448
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1989,
+        "id": 2063,
         "linearizedBaseContracts": [
-          1989,
-          4305,
-          4374,
-          3630
+          2063,
+          4379,
+          4448,
+          3704
         ],
         "name": "WithdrawalPoolToken",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 1987,
+              "id": 2061,
               "nodeType": "Block",
               "src": "207:6:8",
               "statements": []
             },
             "documentation": null,
-            "id": 1988,
+            "id": 2062,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
@@ -597,11 +597,11 @@
                 "arguments": [
                   {
                     "argumentTypes": null,
-                    "id": 1983,
+                    "id": 2057,
                     "name": "name",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1978,
+                    "referencedDeclaration": 2052,
                     "src": "193:4:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_memory_ptr",
@@ -610,11 +610,11 @@
                   },
                   {
                     "argumentTypes": null,
-                    "id": 1984,
+                    "id": 2058,
                     "name": "symbol",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 1980,
+                    "referencedDeclaration": 2054,
                     "src": "199:6:8",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_memory_ptr",
@@ -622,17 +622,17 @@
                     }
                   }
                 ],
-                "id": 1985,
+                "id": 2059,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 1982,
+                  "id": 2056,
                   "name": "ERC20",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 4305,
+                  "referencedDeclaration": 4379,
                   "src": "187:5:8",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_type$_t_contract$_ERC20_$4305_$",
+                    "typeIdentifier": "t_type$_t_contract$_ERC20_$4379_$",
                     "typeString": "type(contract ERC20)"
                   }
                 },
@@ -644,16 +644,16 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1981,
+              "id": 2055,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1978,
+                  "id": 2052,
                   "name": "name",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1988,
+                  "scope": 2062,
                   "src": "138:18:8",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -662,7 +662,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1977,
+                    "id": 2051,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "138:6:8",
@@ -676,11 +676,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1980,
+                  "id": 2054,
                   "name": "symbol",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1988,
+                  "scope": 2062,
                   "src": "158:20:8",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -689,7 +689,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1979,
+                    "id": 2053,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "158:6:8",
@@ -705,19 +705,19 @@
               "src": "137:42:8"
             },
             "returnParameters": {
-              "id": 1986,
+              "id": 2060,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "207:0:8"
             },
-            "scope": 1989,
+            "scope": 2063,
             "src": "125:88:8",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 1990,
+        "scope": 2064,
         "src": "82:133:8"
       }
     ],
@@ -729,7 +729,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.4",
-  "updatedAt": "2020-11-15T22:48:39.260Z",
+  "updatedAt": "2020-11-16T00:53:43.515Z",
   "devdoc": {
     "methods": {
       "allowance(address,address)": {
