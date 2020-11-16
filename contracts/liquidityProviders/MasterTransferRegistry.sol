@@ -167,7 +167,11 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   }
 
   function payFromInsuranceFund(address erc20, address recipient, uint256 amount) public onlyPool returns (bool) {
-    lentSupply[erc20] = lentSupply[erc20].sub(amount);
+    if(lentSupply[erc20] > amount) {
+      lentSupply[erc20] = lentSupply[erc20].sub(amount);
+    } else {
+      lentSupply[erc20] = 0;
+    }
     uint256 equivalentValueInNEC = necExchangeRate(erc20, amount);
     IERC20(NEC).safeTransfer(recipient, equivalentValueInNEC.mul(reserveRatio));
     emit LogInsurancePayout(recipient, amount);

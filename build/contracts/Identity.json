@@ -26,14 +26,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/Identity.sol",
     "exportedSymbols": {
       "Identity": [
-        3114
+        3143
       ]
     },
-    "id": 3115,
+    "id": 3144,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3108,
+        "id": 3137,
         "literals": [
           "solidity",
           "^",
@@ -50,9 +50,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3114,
+        "id": 3143,
         "linearizedBaseContracts": [
-          3114
+          3143
         ],
         "name": "Identity",
         "nodeType": "ContractDefinition",
@@ -61,7 +61,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "eeb72866",
-            "id": 3113,
+            "id": 3142,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -69,22 +69,22 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3109,
+              "id": 3138,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "808:2:15"
             },
             "returnParameters": {
-              "id": 3112,
+              "id": 3141,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3111,
+                  "id": 3140,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3113,
+                  "scope": 3142,
                   "src": "849:13:15",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -93,7 +93,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 3110,
+                    "id": 3139,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "849:6:15",
@@ -108,14 +108,14 @@
               ],
               "src": "848:15:15"
             },
-            "scope": 3114,
+            "scope": 3143,
             "src": "791:73:15",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3115,
+        "scope": 3144,
         "src": "621:245:15"
       }
     ],
@@ -125,14 +125,14 @@
     "absolutePath": "/Users/willharborne/Desktop/EFX/repos/lp-contracts/contracts/starkEx/Identity.sol",
     "exportedSymbols": {
       "Identity": [
-        3114
+        3143
       ]
     },
-    "id": 3115,
+    "id": 3144,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3108,
+        "id": 3137,
         "literals": [
           "solidity",
           "^",
@@ -149,9 +149,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3114,
+        "id": 3143,
         "linearizedBaseContracts": [
-          3114
+          3143
         ],
         "name": "Identity",
         "nodeType": "ContractDefinition",
@@ -160,7 +160,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "eeb72866",
-            "id": 3113,
+            "id": 3142,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -168,22 +168,22 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 3109,
+              "id": 3138,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "808:2:15"
             },
             "returnParameters": {
-              "id": 3112,
+              "id": 3141,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3111,
+                  "id": 3140,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 3113,
+                  "scope": 3142,
                   "src": "849:13:15",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -192,7 +192,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 3110,
+                    "id": 3139,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "849:6:15",
@@ -207,14 +207,14 @@
               ],
               "src": "848:15:15"
             },
-            "scope": 3114,
+            "scope": 3143,
             "src": "791:73:15",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3115,
+        "scope": 3144,
         "src": "621:245:15"
       }
     ],
@@ -226,7 +226,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.4",
-  "updatedAt": "2020-11-16T00:53:43.549Z",
+  "updatedAt": "2020-11-16T10:45:36.945Z",
   "devdoc": {
     "methods": {}
   },
