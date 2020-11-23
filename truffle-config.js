@@ -20,8 +20,8 @@
 
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 
-const infuraKey = '32fa3b2a5f8f4d7b988f10b2ba858743'
-const privateKey = '722e19e27ec6418de896da77eebfd88c29701341e750748adaf2ef9b50d753fa'
+const infuraKey = ''
+const privateKey = ''
 
 module.exports = {
   /**
