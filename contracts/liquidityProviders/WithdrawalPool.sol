@@ -140,7 +140,7 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
     assert(poolToken == WETH);
     withdrawFromAaveIfRequired(amount);
     IWETH(WETH).withdraw(amount);
-    recipient.transfer(amount);
+    recipient.call.value(amount)("");
   }
 
 
