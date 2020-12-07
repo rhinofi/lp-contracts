@@ -122,6 +122,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
         WithdrawalPool(payable(tokenPools[WETH])).makeTemporaryLoanETH(payable(recipient), calculateAmountMinusFee(amount));
         recordBorrowingFromPool(WETH, amount);
       } else {
+        require(tokenPools[erc20] != address(0), "Registry: POOL_MUST_EXIST");
         WithdrawalPool(payable(tokenPools[erc20])).makeTemporaryLoan(recipient, calculateAmountMinusFee(amount));
         recordBorrowingFromPool(erc20, amount);
       }
@@ -141,6 +142,8 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   }
 
   function repayToPool(address erc20, uint256 amount) external returns (bool) {
+    require(tokenPools[erc20] != address(0), "Registry: POOL_MUST_EXIST");
+    require(amount > 0);
     lentSupply[erc20] = lentSupply[erc20].sub(amount);
     // Note that to save gas we do not recalculate lentSupplyEquivNEC here since it will be calculated when the next transfer out is made, and is not needed until then
     IERC20(erc20).safeTransferFrom(msg.sender, tokenPools[erc20], amount);

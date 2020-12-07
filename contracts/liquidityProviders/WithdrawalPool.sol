@@ -81,8 +81,8 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
        newPoolShares = totalPoolShares.mul(amountUnderlying).div(totalPoolSize());
     }
     emit LogJoinedPool(msg.sender, poolToken, amountUnderlying, newPoolShares);
-    IERC20(poolToken).safeTransferFrom(msg.sender, address(this), amountUnderlying);
     _mint(msg.sender, newPoolShares);
+    IERC20(poolToken).safeTransferFrom(msg.sender, address(this), amountUnderlying);
     increaseReservedBalance(amountUnderlying);
   }
 
