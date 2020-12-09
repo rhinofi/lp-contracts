@@ -62,7 +62,7 @@ contract('MasterTransferRegistry', (accounts) => {
 
   it('deploy: transfer registry gets deployed and has correct identifier', async () => {
     const name = await registry.identify()
-    assert.equal(name, 'DeversiFi_MasterTransferRegistry_v0.0.1', 'Name not set')
+    assert.equal(name, 'DeversiFi_MTR_v0.0.1', 'Name not set')
   })
 
   it('transferForDeversifiWithdrawals: cannot transfer more than deposited in the weth pool', async () => {

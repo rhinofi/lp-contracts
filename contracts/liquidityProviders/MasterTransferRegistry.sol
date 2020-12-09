@@ -37,12 +37,12 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   uint8 public targetAvailabilityPercentage;
 
   modifier onlyPool() {
-    require(isPool[msg.sender], "Registry: CALLER_MUST_BE_POOL");
+    require(isPool[msg.sender], "Reg: MUST_BE_POOL");
     _;
   }
 
   modifier onlyTransferAdmin() {
-    require(msg.sender == transferAdmin, "Registry: CALLER_MUST_BE_TRANSFER_ADMIN");
+    require(msg.sender == transferAdmin, "Reg: MUST_BE_ADMIN");
     _;
   }
 
@@ -54,7 +54,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   ) public initializer {
     __OracleManager_init(_uniswapFactory, _WETH, _NEC);
     __Ownable_init();
-    contractName = string(abi.encodePacked("DeversiFi_MasterTransferRegistry_v0.0.1"));
+    contractName = string(abi.encodePacked("DeversiFi_MTR_v0.0.1"));
     aaveLendingPoolRegistry = _aaveLendingPoolRegistry;
     inverseFee = 9990;
     reserveRatio = 2;
@@ -114,7 +114,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
       external onlyTransferAdmin {
       bytes32 transferFact = keccak256(
           abi.encodePacked(recipient, amount, erc20, salt));
-      require(!_factCheck(transferFact), "Registry: TRANSFER_ALREADY_REGISTERED");
+      require(!_factCheck(transferFact), "Reg: ALREADY_REG");
       registerFact(transferFact);
       emit LogRegisteredTransfer(recipient, erc20, amount, salt);
 
@@ -122,7 +122,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
         WithdrawalPool(payable(tokenPools[WETH])).makeTemporaryLoanETH(payable(recipient), calculateAmountMinusFee(amount));
         recordBorrowingFromPool(WETH, amount);
       } else {
-        require(tokenPools[erc20] != address(0), "Registry: POOL_MUST_EXIST");
+        require(tokenPools[erc20] != address(0), "Reg: POOL_MUST_EXIST");
         WithdrawalPool(payable(tokenPools[erc20])).makeTemporaryLoan(recipient, calculateAmountMinusFee(amount));
         recordBorrowingFromPool(erc20, amount);
       }
@@ -137,12 +137,12 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
     lentSupply[erc20] = lentSupply[erc20].add(amount);
     lentSupplyEquivNEC[erc20] = necExchangeRate(erc20, lentSupply[erc20]);
     allPoolsLentSupplyEquivNEC = allPoolsLentSupplyEquivNEC.add(lentSupplyEquivNEC[erc20]);
-    require(allPoolsLentSupplyEquivNEC.mul(reserveRatio) <= totalNEC(), "Registry: BORROWING_EXCEEDS_NEC_COLLATERAL_LIMT");
+    require(allPoolsLentSupplyEquivNEC.mul(reserveRatio) <= totalNEC(), "Reg: EXCEEDS_NEC_COLL_LIMT");
     return true;
   }
 
   function repayToPool(address erc20, uint256 amount) external returns (bool) {
-    require(tokenPools[erc20] != address(0), "Registry: POOL_MUST_EXIST");
+    require(tokenPools[erc20] != address(0), "Reg: POOL_MUST_EXIST");
     require(amount > 0);
     lentSupply[erc20] = lentSupply[erc20].sub(amount);
     // Note that to save gas we do not recalculate lentSupplyEquivNEC here since it will be calculated when the next transfer out is made, and is not needed until then
@@ -182,7 +182,7 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
   }
 
   function createNewPool(address _newPoolToken) external onlyOwner {
-    require(tokenPools[_newPoolToken] == address(0), "Registry: TOKEN_NOT_ON_UNISWAP");
+    require(tokenPools[_newPoolToken] == address(0), "Reg: NOT_ON_UNI");
     registerNewOracle(_newPoolToken);
     string memory symbol = ERC20(_newPoolToken).symbol();
     WithdrawalPool newPool  = new WithdrawalPool(
@@ -198,19 +198,19 @@ contract MasterTransferRegistry is Initializable, FactRegistry, Identity, Oracle
 
   function setTransferFee(uint256 _newFee) external onlyOwner {
     // Fee must be between 0 and 1%
-    require(_newFee <= 10000, "Registry: POOL_TRANSFER_FEE_MINIMUM_0%");
-    require(_newFee >= 9900, "Registry: POOL_TRANSFER_FEE_MAXIMUM_1%");
+    require(_newFee <= 10000, "Reg: FEE_MIN_0%");
+    require(_newFee >= 9900, "Reg: FEE_MAX_1%");
     inverseFee = _newFee;
   }
 
   function setAvailabilityPercentage(uint8 _newPercentage) external onlyOwner {
-    require(_newPercentage <= 100, "Registry: POOL_AVAILABILITY_MAXIMUM_100%");
+    require(_newPercentage <= 100, "Reg: AVAILABILITY_MAX_100%");
     targetAvailabilityPercentage = _newPercentage;
   }
 
   function setAaveIsActive(address _tokenAddress, bool _isActive) external onlyOwner {
     address poolAddress = tokenPools[_tokenAddress];
-    require(poolAddress != address(0), "Registry: POOL_MUST_EXIST");
+    require(poolAddress != address(0), "Reg: POOL_MUST_EXIST");
     isAaveActive[poolAddress] = _isActive;
     if (isAaveActive[poolAddress] == false) {
       WithdrawalPool(payable(poolAddress)).withdrawAllFromAave();
