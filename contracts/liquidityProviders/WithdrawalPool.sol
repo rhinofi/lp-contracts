@@ -90,7 +90,8 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
     uint256 amountUnderlying = sharesToUnderlying(amountPoolShares);
     if (amountUnderlying <= amountAvailableForInstantExit()) {
       _burn(msg.sender, amountPoolShares);
-      processNormalExit(msg.sender, amountUnderlying, amountPoolShares);
+      IERC20(poolToken).safeTransfer(msg.sender, amountUnderlying);
+      emit LogExit(msg.sender, poolToken, amountUnderlying, amountPoolShares);
     } else {
       _transfer(msg.sender, address(this), amountPoolShares);
       emit LogPendingExit(msg.sender, poolToken, amountPoolShares);
@@ -103,6 +104,9 @@ contract WithdrawalPool is WithdrawalPoolToken, AaveManager {
 
   function finaliseExit(address exiter) public returns (bool) {
     PendingExit memory pending = exitRequests[exiter];
+    if(pending.shares == 0) {
+      return false;
+    }
 
     uint256 amountUnderlying = sharesToUnderlying(pending.shares);
     if (now > pending.requestTime + MINIMUM_EXIT_PERIOD) {
