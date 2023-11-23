@@ -3,3 +3,4 @@ artifacts/*
 /coverage
 coverage.json
 .openzeppelin
+build/

@@ -18,10 +18,20 @@
  *
  */
 
+// const HDWalletProvider = require('@truffle/hdwallet-provider');
+// const infuraKey = "fj4jll3k.....";
+//
+// const fs = require('fs');
+// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const { MNEMONIC, PROJECT_ID, ETHSCAN_KEY, WS_PROVIDER } = process.env
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 
-const infuraKey = ''
-const privateKey = ''
+const getProvider = (network) => {
+  const provider = `https://${network || 'mainnet'}.infura.io/v3/${PROJECT_ID}`
+
+  return provider
+}
+
 
 module.exports = {
   /**
@@ -58,31 +68,47 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     // ropsten: {
-    kovan: {
-      provider: () => new HDWalletProvider(privateKey, `wss://kovan.infura.io/ws/v3/${infuraKey}`),
-      network_id: 42, // Rinkeby's id
-      gas: 5500000, // Rinkeby limit
-      confirmations: 1, // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
-      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
-      networkCheckTimeout: 10000000
-    }
+    // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
+    // network_id: 3,       // Ropsten's id
+    // gas: 5500000,        // Ropsten has a lower block limit than mainnet
+    // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+    // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+    // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    // },
     // Useful for private networks
     // private: {
     // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+    goerli: {
+      provider: () => new HDWalletProvider(MNEMONIC, getProvider('goerli')),
+      network_id: 5, // goerli's id
+      gas: 7800000,
+      // gasPrice: 12800000,
+      // gasPrice: 3000000000,
+      // gasPrice: 100,  // 20 gwei (in wei) (default: 100 gwei)
+      gasPrice: 2000000000,
+      confirmations: 1, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: false, // Skip dry run before migrations? (default: false for public nets )
+    }
   },
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
-    reporter: "eth-gas-reporter"
     // timeout: 100000
   },
 
-  plugins: ["solidity-coverage"],
+  plugins: [
+    'truffle-plugin-verify'
+  ],
 
+  api_keys: {
+    etherscan: ETHSCAN_KEY
+  },
+
+  // Configure your compilers
   // Configure your compilers
   compilers: {
     solc: {
@@ -91,7 +117,7 @@ module.exports = {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
-          runs: 200
+          runs: 10000
         }
       }
     }

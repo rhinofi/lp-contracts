@@ -25,9 +25,14 @@
     "@openzeppelin/contracts-ethereum-package": "^3.0.0",
     "@openzeppelin/truffle-upgrades": "^1.1.1",
     "@truffle/contract": "^4.2.24",
+    "@truffle/hdwallet-provider": "^2.0.13",
     "@uniswap/lib": "^1.1.4",
     "@uniswap/v2-core": "^1.0.1",
     "eth-gas-reporter": "^0.2.17",
-    "solidity-coverage": "^0.7.11"
+    "solidity-coverage": "^0.7.11",
+    "truffle": "^5.5.24"
+  },
+  "devDependencies": {
+    "truffle-plugin-verify": "^0.5.26"
   }
 }
